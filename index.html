@@ -1,0 +1,1731 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📈 Hisse Takip Paneli - Gelişmiş</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #131a2a;
+            --bg-card: #1a2235;
+            --bg-card-hover: #1f2b42;
+            --text-primary: #e2e8f0;
+            --text-secondary: #8892a4;
+            --accent: #3b82f6;
+            --green: #10b981;
+            --green-bg: rgba(16, 185, 129, 0.1);
+            --red: #ef4444;
+            --red-bg: rgba(239, 68, 68, 0.1);
+            --yellow: #f59e0b;
+            --border: #2a3548;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .header-badge {
+            font-size: 13px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.saved { background: var(--green); }
+        .status-dot.unsaved { background: var(--yellow); }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* ===== DATA BAR ===== */
+        .data-bar {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            padding: 8px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            overflow-x: auto;
+        }
+
+        .data-bar-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .data-bar-item strong {
+            color: var(--text-primary);
+        }
+
+        /* ===== CONTAINER ===== */
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* ===== SUMMARY CARDS ===== */
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px;
+            transition: all 0.2s;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent);
+        }
+
+        .summary-card .label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .summary-card .value {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .summary-card .sub {
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        /* ===== TABS ===== */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 16px;
+            background: var(--bg-secondary);
+            padding: 4px;
+            border-radius: 10px;
+            width: fit-content;
+        }
+
+        .tab-btn {
+            padding: 8px 18px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 7px;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: var(--accent);
+            color: white;
+        }
+
+        .tab-btn:hover:not(.active) {
+            color: var(--text-primary);
+            background: var(--bg-card);
+        }
+
+        /* ===== CONTROLS ===== */
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 14px 10px 38px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--accent);
+        }
+
+        .search-box::before {
+            content: '🔍';
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+
+        .btn-primary { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(59,130,246,0.3); }
+        .btn-success { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+        .btn-danger { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
+        .btn-warning { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--accent);
+            background: rgba(59, 130, 246, 0.08);
+        }
+
+        .btn-outline.active {
+            border-color: var(--accent);
+            background: rgba(59, 130, 246, 0.12);
+            color: var(--accent);
+        }
+
+        .btn-sm {
+            padding: 6px 10px;
+            font-size: 12px;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 3px;
+        }
+
+        /* ===== TABLE ===== */
+        .table-wrapper {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            background: var(--bg-secondary);
+            padding: 12px 14px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            user-select: none;
+            white-space: nowrap;
+        }
+
+        thead th:hover { color: var(--accent); }
+        thead th.sorted { color: var(--accent); }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
+            cursor: pointer;
+        }
+
+        tbody tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: var(--bg-card-hover); }
+
+        tbody td {
+            padding: 12px 14px;
+            font-size: 13px;
+        }
+
+        .stock-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stock-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 11px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .stock-sym { font-weight: 700; font-size: 13px; }
+        .stock-name-sub { font-size: 11px; color: var(--text-secondary); }
+
+        .price-val {
+            font-weight: 700;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .pos { color: var(--green); }
+        .neg { color: var(--red); }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 3px 8px;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge.pos-bg { background: var(--green-bg); color: var(--green); }
+        .badge.neg-bg { background: var(--red-bg); color: var(--red); }
+
+        .vol { color: var(--text-secondary); font-family: 'Courier New', monospace; font-size: 12px; }
+
+        .mini-chart { width: 70px; height: 28px; }
+
+        .action-btns { display: flex; gap: 4px; }
+
+        .act-btn {
+            width: 28px;
+            height: 28px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text-secondary);
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        .act-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .act-btn.fav-on { color: var(--yellow); border-color: var(--yellow); }
+        .act-btn.del:hover { border-color: var(--red); color: var(--red); }
+
+        .flash-green { animation: fGreen 0.6s ease; }
+        .flash-red { animation: fRed 0.6s ease; }
+
+        @keyframes fGreen { 0% { background: rgba(16,185,129,0.25); } 100% { background: transparent; } }
+        @keyframes fRed { 0% { background: rgba(239,68,68,0.25); } 100% { background: transparent; } }
+
+        /* ===== DETAIL PANEL ===== */
+        .detail-panel {
+            display: none;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-top: 16px;
+            overflow: hidden;
+        }
+
+        .detail-panel.open { display: block; }
+
+        .detail-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .detail-top h2 {
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .detail-body { padding: 20px; }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .detail-box {
+            background: var(--bg-secondary);
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .detail-box .lbl { font-size: 10px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
+        .detail-box .val { font-size: 16px; font-weight: 700; margin-top: 3px; }
+
+        .chart-area {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .chart-canvas { width: 100%; height: 180px; }
+
+        /* ===== MODALS ===== */
+        .modal-bg {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-bg.open { display: flex; }
+
+        .modal-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 24px;
+            width: 94%;
+            max-width: 480px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-box h2 {
+            font-size: 18px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .field { margin-bottom: 14px; }
+
+        .field label {
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+
+        .field input, .field select {
+            width: 100%;
+            padding: 10px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            color: var(--text-primary);
+            font-size: 13px;
+            outline: none;
+        }
+
+        .field input:focus, .field select:focus { border-color: var(--accent); }
+
+        .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+        .modal-actions { display: flex; gap: 8px; margin-top: 6px; }
+        .modal-actions .btn { flex: 1; justify-content: center; }
+
+        /* ===== EXPORT/IMPORT SECTION ===== */
+        .data-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 16px;
+        }
+
+        .data-section h3 {
+            font-size: 15px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .data-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
+        }
+
+        .data-info {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 10px;
+            padding: 10px;
+            background: var(--bg-secondary);
+            border-radius: 6px;
+        }
+
+        .data-info strong { color: var(--text-primary); }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        /* ===== ALERTS ===== */
+        .alert-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 14px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 6px;
+        }
+
+        .alert-left { display: flex; align-items: center; gap: 10px; }
+
+        .alert-tag {
+            padding: 3px 7px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .alert-tag.up { background: var(--green-bg); color: var(--green); }
+        .alert-tag.down { background: var(--red-bg); color: var(--red); }
+
+        /* ===== EMPTY STATE ===== */
+        .empty {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty .icon { font-size: 42px; margin-bottom: 12px; }
+        .empty h3 { font-size: 16px; color: var(--text-primary); margin-bottom: 6px; }
+
+        /* ===== TOAST ===== */
+        .toast-box {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .toast-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: tIn 0.3s ease;
+            min-width: 260px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            font-size: 13px;
+        }
+
+        .toast-item.t-success { border-left: 3px solid var(--green); }
+        .toast-item.t-error { border-left: 3px solid var(--red); }
+        .toast-item.t-warning { border-left: 3px solid var(--yellow); }
+        .toast-item.t-info { border-left: 3px solid var(--accent); }
+
+        @keyframes tIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        /* ===== AUTO-SAVE INDICATOR ===== */
+        .save-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 16px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 50;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .save-indicator.visible { opacity: 1; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .header { padding: 10px 14px; }
+            .container { padding: 10px; }
+            .summary-cards { grid-template-columns: 1fr 1fr; gap: 8px; }
+            .summary-card { padding: 12px; }
+            .summary-card .value { font-size: 18px; }
+            .controls { flex-direction: column; }
+            .search-box { min-width: 100%; }
+            .hide-m { display: none !important; }
+            .data-bar { padding: 6px 14px; }
+        }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+    <div class="header-left">
+        <span style="font-size:24px;">📊</span>
+        <h1>Hisse Takip Paneli</h1>
+    </div>
+    <div class="header-right">
+        <div class="header-badge">
+            <span class="status-dot saved" id="saveDot"></span>
+            <span id="saveStatus">Kaydedildi</span>
+        </div>
+        <div class="header-badge" id="storageInfo">💾 0 KB</div>
+        <div class="header-badge" id="clock">⏰ 00:00</div>
+    </div>
+</header>
+
+<!-- DATA BAR -->
+<div class="data-bar">
+    <div class="data-bar-item">📅 Son Kayıt: <strong id="lastSaveTime">-</strong></div>
+    <div class="data-bar-item">📊 Hisse: <strong id="barStockCount">0</strong></div>
+    <div class="data-bar-item">💼 Portföy: <strong id="barPortCount">0</strong></div>
+    <div class="data-bar-item">🔔 Alarm: <strong id="barAlertCount">0</strong></div>
+    <div class="data-bar-item">💾 Otomatik Kayıt: <strong style="color:var(--green);">Açık</strong></div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+    <!-- Summary -->
+    <div class="summary-cards">
+        <div class="summary-card">
+            <div class="label">💰 Portföy Değeri</div>
+            <div class="value" id="sumValue">₺0</div>
+            <div class="sub" id="sumValueSub"></div>
+        </div>
+        <div class="summary-card">
+            <div class="label">📊 Günlük K/Z</div>
+            <div class="value" id="sumDaily">₺0</div>
+            <div class="sub" id="sumDailySub"></div>
+        </div>
+        <div class="summary-card">
+            <div class="label">📈 Toplam K/Z</div>
+            <div class="value" id="sumTotal">₺0</div>
+            <div class="sub" id="sumTotalSub"></div>
+        </div>
+        <div class="summary-card">
+            <div class="label">📋 Takip Edilen</div>
+            <div class="value" id="sumCount">0</div>
+            <div class="sub">hisse senedi</div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('watch',this)">📋 Takip</button>
+        <button class="tab-btn" onclick="switchTab('port',this)">💼 Portföy</button>
+        <button class="tab-btn" onclick="switchTab('alert',this)">🔔 Alarmlar</button>
+        <button class="tab-btn" onclick="switchTab('data',this)">💾 Veri Yönetimi</button>
+    </div>
+
+    <!-- ========== WATCHLIST TAB ========== -->
+    <div id="tabWatch">
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Hisse ara (THYAO, ASELS...)" oninput="render()">
+            </div>
+            <div class="filter-group">
+                <button class="btn btn-outline btn-sm active" onclick="setFilter('all',this)">Tümü</button>
+                <button class="btn btn-outline btn-sm" onclick="setFilter('up',this)">📈 Artan</button>
+                <button class="btn btn-outline btn-sm" onclick="setFilter('down',this)">📉 Düşen</button>
+                <button class="btn btn-outline btn-sm" onclick="setFilter('fav',this)">⭐ Favori</button>
+            </div>
+            <button class="btn btn-primary" onclick="openModal('addModal')">➕ Hisse Ekle</button>
+            <button class="btn btn-success" onclick="refreshAll()">🔄 Güncelle</button>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th onclick="setSort('symbol')">Hisse ↕</th>
+                        <th onclick="setSort('price')">Fiyat ↕</th>
+                        <th onclick="setSort('change')">Değişim ↕</th>
+                        <th onclick="setSort('changePct')">% ↕</th>
+                        <th class="hide-m" onclick="setSort('volume')">Hacim ↕</th>
+                        <th class="hide-m">Yüksek</th>
+                        <th class="hide-m">Düşük</th>
+                        <th class="hide-m">Grafik</th>
+                        <th>İşlem</th>
+                    </tr>
+                </thead>
+                <tbody id="tBody"></tbody>
+            </table>
+        </div>
+        <div class="empty" id="watchEmpty" style="display:none">
+            <div class="icon">📭</div>
+            <h3>Liste boş</h3>
+            <p>"Hisse Ekle" ile başlayın</p>
+        </div>
+    </div>
+
+    <!-- ========== PORTFOLIO TAB ========== -->
+    <div id="tabPort" style="display:none">
+        <div class="controls">
+            <button class="btn btn-primary" onclick="openModal('portModal')">➕ İşlem Ekle</button>
+        </div>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Hisse</th>
+                        <th>Lot</th>
+                        <th>Maliyet</th>
+                        <th>Güncel</th>
+                        <th>Değer</th>
+                        <th>K/Z</th>
+                        <th>%</th>
+                        <th>İşlem</th>
+                    </tr>
+                </thead>
+                <tbody id="portBody"></tbody>
+            </table>
+        </div>
+        <div class="empty" id="portEmpty" style="display:none">
+            <div class="icon">💼</div>
+            <h3>Portföy boş</h3>
+            <p>"İşlem Ekle" ile portföy oluşturun</p>
+        </div>
+    </div>
+
+    <!-- ========== ALERTS TAB ========== -->
+    <div id="tabAlert" style="display:none">
+        <div class="controls">
+            <button class="btn btn-primary" onclick="openModal('alertModal')">🔔 Alarm Ekle</button>
+        </div>
+        <div id="alertList"></div>
+        <div class="empty" id="alertEmpty" style="display:none">
+            <div class="icon">🔔</div>
+            <h3>Alarm yok</h3>
+            <p>Fiyat alarmı oluşturun</p>
+        </div>
+    </div>
+
+    <!-- ========== DATA MANAGEMENT TAB ========== -->
+    <div id="tabData" style="display:none">
+        <div class="data-section">
+            <h3>💾 Kayıt & Yedekleme</h3>
+            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:14px;">
+                Verileriniz tarayıcınızın <strong>localStorage</strong>'ında saklanır. Ayrıca JSON dosyası olarak
+                dışa aktarabilir, başka bir cihazda veya tarayıcıda içe aktarabilirsiniz.
+            </p>
+
+            <div class="data-actions">
+                <button class="btn btn-success" onclick="manualSave()">💾 Şimdi Kaydet</button>
+                <button class="btn btn-primary" onclick="exportJSON()">📤 JSON Dışa Aktar</button>
+                <button class="btn btn-warning" onclick="exportCSV()">📊 CSV Dışa Aktar</button>
+                <div class="file-input-wrapper">
+                    <button class="btn btn-outline">📥 JSON İçe Aktar</button>
+                    <input type="file" accept=".json" onchange="importJSON(event)">
+                </div>
+                <button class="btn btn-danger" onclick="clearAllData()">🗑️ Tüm Verileri Sil</button>
+            </div>
+
+            <div class="data-info" id="dataStats"></div>
+
+            <h3 style="margin-top:20px;">📜 Kayıt Geçmişi</h3>
+            <div id="saveHistory" style="margin-top:10px;"></div>
+        </div>
+    </div>
+
+    <!-- Detail Panel -->
+    <div class="detail-panel" id="detailPanel">
+        <div class="detail-top">
+            <h2 id="detailTitle">Detay</h2>
+            <button class="btn btn-outline btn-sm" onclick="closeDetail()">✕ Kapat</button>
+        </div>
+        <div class="detail-body">
+            <div class="detail-grid" id="detailGrid"></div>
+            <div class="chart-area">
+                <canvas id="bigChart" class="chart-canvas"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== MODALS ===== -->
+
+<!-- Add Stock -->
+<div class="modal-bg" id="addModal">
+    <div class="modal-box">
+        <h2>➕ Hisse Ekle</h2>
+        <div class="field">
+            <label>Hazır Liste</label>
+            <select id="selStock"><option value="">Seçin...</option></select>
+        </div>
+        <div class="field">
+            <label>veya Manuel Kod</label>
+            <input type="text" id="manSym" placeholder="THYAO" style="text-transform:uppercase">
+        </div>
+        <div class="field-row">
+            <div class="field">
+                <label>Fiyat (₺)</label>
+                <input type="number" id="manPrice" step="0.01" placeholder="0.00">
+            </div>
+            <div class="field">
+                <label>Sektör</label>
+                <select id="manSector">
+                    <option>Havacılık</option><option>Bankacılık</option><option>Savunma</option>
+                    <option>Enerji</option><option>Perakende</option><option>Otomotiv</option>
+                    <option>Teknoloji</option><option>Holding</option><option>Diğer</option>
+                </select>
+            </div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-primary" onclick="addStock()">Ekle</button>
+            <button class="btn btn-outline" onclick="closeModal('addModal')">İptal</button>
+        </div>
+    </div>
+</div>
+
+<!-- Portfolio -->
+<div class="modal-bg" id="portModal">
+    <div class="modal-box">
+        <h2>💼 İşlem Ekle</h2>
+        <div class="field">
+            <label>Hisse</label>
+            <select id="portSel"><option value="">Seçin...</option></select>
+        </div>
+        <div class="field-row">
+            <div class="field"><label>Lot</label><input type="number" id="portLot" placeholder="0"></div>
+            <div class="field"><label>Alış Fiyatı (₺)</label><input type="number" id="portPrice" step="0.01" placeholder="0.00"></div>
+        </div>
+        <div class="field"><label>Tarih</label><input type="date" id="portDate"></div>
+        <div class="modal-actions">
+            <button class="btn btn-success" onclick="addPortfolio()">Ekle</button>
+            <button class="btn btn-outline" onclick="closeModal('portModal')">İptal</button>
+        </div>
+    </div>
+</div>
+
+<!-- Alert -->
+<div class="modal-bg" id="alertModal">
+    <div class="modal-box">
+        <h2>🔔 Fiyat Alarmı</h2>
+        <div class="field">
+            <label>Hisse</label>
+            <select id="alertSel"><option value="">Seçin...</option></select>
+        </div>
+        <div class="field-row">
+            <div class="field">
+                <label>Koşul</label>
+                <select id="alertCond">
+                    <option value="above">Üstüne Çıkarsa</option>
+                    <option value="below">Altına Düşerse</option>
+                </select>
+            </div>
+            <div class="field"><label>Fiyat (₺)</label><input type="number" id="alertPr" step="0.01" placeholder="0.00"></div>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-primary" onclick="addAlert()">Kur</button>
+            <button class="btn btn-outline" onclick="closeModal('alertModal')">İptal</button>
+        </div>
+    </div>
+</div>
+
+<!-- Save Indicator -->
+<div class="save-indicator" id="saveInd">
+    <span class="status-dot saved"></span>
+    <span>Otomatik kaydedildi</span>
+</div>
+
+<!-- Toasts -->
+<div class="toast-box" id="toasts"></div>
+
+<script>
+// ==============================
+//  BIST STOCK DATABASE
+// ==============================
+const DB = {
+    'THYAO': { n: 'Türk Hava Yolları', s: 'Havacılık', p: 292.50 },
+    'ASELS': { n: 'Aselsan', s: 'Savunma', p: 57.80 },
+    'GARAN': { n: 'Garanti Bankası', s: 'Bankacılık', p: 128.40 },
+    'SISE':  { n: 'Şişecam', s: 'Cam', p: 45.20 },
+    'EREGL': { n: 'Ereğli Demir Çelik', s: 'Demir Çelik', p: 53.10 },
+    'KCHOL': { n: 'Koç Holding', s: 'Holding', p: 178.90 },
+    'SAHOL': { n: 'Sabancı Holding', s: 'Holding', p: 88.50 },
+    'BIMAS': { n: 'BİM Mağazaları', s: 'Perakende', p: 540.00 },
+    'AKBNK': { n: 'Akbank', s: 'Bankacılık', p: 62.15 },
+    'TUPRS': { n: 'Tüpraş', s: 'Enerji', p: 165.30 },
+    'TCELL': { n: 'Turkcell', s: 'Teknoloji', p: 98.60 },
+    'PGSUS': { n: 'Pegasus', s: 'Havacılık', p: 870.00 },
+    'TOASO': { n: 'Tofaş Otomobil', s: 'Otomotiv', p: 235.00 },
+    'FROTO': { n: 'Ford Otosan', s: 'Otomotiv', p: 950.00 },
+    'YKBNK': { n: 'Yapı Kredi', s: 'Bankacılık', p: 30.84 },
+    'HALKB': { n: 'Halkbank', s: 'Bankacılık', p: 17.89 },
+    'VAKBN': { n: 'Vakıfbank', s: 'Bankacılık', p: 19.50 },
+    'PETKM': { n: 'Petkim', s: 'Enerji', p: 23.70 },
+    'TAVHL': { n: 'TAV Havalimanları', s: 'Havacılık', p: 48.50 },
+    'EKGYO': { n: 'Emlak Konut GYO', s: 'GYO', p: 11.20 },
+    'KOZAL': { n: 'Koza Altın', s: 'Madencilik', p: 120.00 },
+    'SASA':  { n: 'SASA Polyester', s: 'Kimya', p: 55.40 },
+    'ENKAI': { n: 'Enka İnşaat', s: 'İnşaat', p: 33.10 },
+    'ARCLK': { n: 'Arçelik', s: 'Beyaz Eşya', p: 175.50 },
+    'DOHOL': { n: 'Doğan Holding', s: 'Holding', p: 25.60 }
+};
+
+const COLORS = ['#3b82f6','#ef4444','#10b981','#f59e0b','#8b5cf6','#ec4899','#14b8a6','#f97316','#6366f1','#84cc16'];
+
+// ==============================
+//  STATE
+// ==============================
+let state = {
+    stocks: [],
+    portfolio: [],
+    alerts: [],
+    favorites: [],
+    history: {},
+    saveLog: []
+};
+
+let filter = 'all';
+let sort = { key: 'symbol', asc: true };
+let activeTab = 'watch';
+let saveTimer = null;
+let dataChanged = false;
+
+// ==============================
+//  INIT
+// ==============================
+function init() {
+    loadState();
+    if (state.stocks.length === 0) loadDefaults();
+    fillSelects();
+    updateClock();
+    setInterval(updateClock, 1000);
+    setInterval(tick, 3000);
+    setInterval(checkAlerts, 5000);
+    render();
+    updateDataStats();
+}
+
+function loadDefaults() {
+    ['THYAO','ASELS','GARAN','BIMAS','KCHOL','TUPRS','AKBNK','TCELL','PGSUS','EREGL'].forEach(s => {
+        const d = DB[s];
+        if (d) state.stocks.push(makeStock(s, d.n, d.p, d.s));
+    });
+    autoSave();
+}
+
+function makeStock(sym, name, base, sector) {
+    const ch = (Math.random() - 0.48) * base * 0.06;
+    const pr = +(base + ch).toFixed(2);
+    const vol = Math.floor(Math.random() * 50e6) + 1e6;
+    if (!state.history[sym]) {
+        state.history[sym] = [];
+        let p = base;
+        for (let i = 0; i < 30; i++) { p += (Math.random()-0.48)*base*0.02; state.history[sym].push(+p.toFixed(2)); }
+    }
+    return {
+        symbol: sym, name, sector: sector||'Diğer',
+        price: pr, open: base, change: +ch.toFixed(2),
+        changePct: +((ch/base)*100).toFixed(2),
+        volume: vol,
+        high: +(pr*(1+Math.random()*0.03)).toFixed(2),
+        low: +(pr*(1-Math.random()*0.03)).toFixed(2),
+        prevPrice: pr,
+        color: COLORS[Math.abs(hash(sym)) % COLORS.length]
+    };
+}
+
+function hash(s) { let h=0; for(let i=0;i<s.length;i++) h=s.charCodeAt(i)+((h<<5)-h); return h; }
+
+// ==============================
+//  STORAGE (localStorage)
+// ==============================
+const STORAGE_KEY = 'hisse_takip_v2';
+
+function saveState() {
+    try {
+        const data = JSON.stringify(state);
+        localStorage.setItem(STORAGE_KEY, data);
+
+        // Save log
+        const now = new Date().toLocaleString('tr-TR');
+        state.saveLog.unshift({ time: now, size: data.length });
+        if (state.saveLog.length > 20) state.saveLog = state.saveLog.slice(0, 20);
+        localStorage.setItem(STORAGE_KEY + '_log', JSON.stringify(state.saveLog));
+
+        // Update UI
+        document.getElementById('saveDot').className = 'status-dot saved';
+        document.getElementById('saveStatus').textContent = 'Kaydedildi';
+        document.getElementById('lastSaveTime').textContent = now;
+        updateStorageSize();
+        dataChanged = false;
+
+        // Flash save indicator
+        const ind = document.getElementById('saveInd');
+        ind.classList.add('visible');
+        setTimeout(() => ind.classList.remove('visible'), 2000);
+    } catch (e) {
+        document.getElementById('saveDot').className = 'status-dot unsaved';
+        document.getElementById('saveStatus').textContent = 'Hata!';
+        toast('Kayıt hatası: ' + e.message, 'error');
+    }
+}
+
+function loadState() {
+    try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+            const parsed = JSON.parse(raw);
+            state.stocks = parsed.stocks || [];
+            state.portfolio = parsed.portfolio || [];
+            state.alerts = parsed.alerts || [];
+            state.favorites = parsed.favorites || [];
+            state.history = parsed.history || {};
+        }
+        const logRaw = localStorage.getItem(STORAGE_KEY + '_log');
+        if (logRaw) state.saveLog = JSON.parse(logRaw);
+    } catch (e) {
+        toast('Veri yükleme hatası', 'error');
+    }
+}
+
+function autoSave() {
+    dataChanged = true;
+    document.getElementById('saveDot').className = 'status-dot unsaved';
+    document.getElementById('saveStatus').textContent = 'Kaydediliyor...';
+
+    if (saveTimer) clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+        saveState();
+    }, 1500); // 1.5 saniye debounce
+}
+
+function manualSave() {
+    saveState();
+    toast('Veriler başarıyla kaydedildi!', 'success');
+    updateDataStats();
+}
+
+function updateStorageSize() {
+    try {
+        const data = localStorage.getItem(STORAGE_KEY) || '';
+        const bytes = new Blob([data]).size;
+        const kb = (bytes / 1024).toFixed(1);
+        document.getElementById('storageInfo').textContent = `💾 ${kb} KB`;
+    } catch(e) {}
+}
+
+// ==============================
+//  EXPORT / IMPORT
+// ==============================
+function exportJSON() {
+    const data = JSON.stringify(state, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `hisse_takip_${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast('JSON dosyası indirildi', 'success');
+}
+
+function exportCSV() {
+    let csv = 'Hisse,Fiyat,Değişim,%Değişim,Hacim,Yüksek,Düşük,Sektör\n';
+    state.stocks.forEach(s => {
+        csv += `${s.symbol},${s.price},${s.change},${s.changePct},${s.volume},${s.high},${s.low},${s.sector}\n`;
+    });
+
+    if (state.portfolio.length > 0) {
+        csv += '\nPortföy\nHisse,Lot,Maliyet,Tarih\n';
+        state.portfolio.forEach(p => {
+            csv += `${p.symbol},${p.lots},${p.buyPrice},${p.date}\n`;
+        });
+    }
+
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `hisse_takip_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast('CSV dosyası indirildi', 'success');
+}
+
+function importJSON(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const imported = JSON.parse(e.target.result);
+            if (imported.stocks && Array.isArray(imported.stocks)) {
+                const oldCount = state.stocks.length;
+                state.stocks = imported.stocks;
+                state.portfolio = imported.portfolio || [];
+                state.alerts = imported.alerts || [];
+                state.favorites = imported.favorites || [];
+                state.history = imported.history || {};
+                autoSave();
+                fillSelects();
+                render();
+                toast(`${state.stocks.length} hisse başarıyla içe aktarıldı! (önceki: ${oldCount})`, 'success');
+            } else {
+                toast('Geçersiz dosya formatı', 'error');
+            }
+        } catch (err) {
+            toast('Dosya okunamadı: ' + err.message, 'error');
+        }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+}
+
+function clearAllData() {
+    if (!confirm('⚠️ TÜM VERİLER SİLİNECEK!\n\nÖnce "JSON Dışa Aktar" ile yedek almanız önerilir.\n\nDevam etmek istiyor musunuz?')) return;
+    if (!confirm('Son onay: Gerçekten tüm verileri silmek istiyor musunuz?')) return;
+
+    state = { stocks: [], portfolio: [], alerts: [], favorites: [], history: {}, saveLog: [] };
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(STORAGE_KEY + '_log');
+    fillSelects();
+    render();
+    updateDataStats();
+    toast('Tüm veriler silindi', 'warning');
+}
+
+function updateDataStats() {
+    const raw = localStorage.getItem(STORAGE_KEY) || '';
+    const bytes = new Blob([raw]).size;
+    const kb = (bytes / 1024).toFixed(1);
+    const maxKB = 5120; // ~5MB limit
+
+    document.getElementById('dataStats').innerHTML = `
+        <strong>📊 Veri İstatistikleri</strong><br><br>
+        Hisse sayısı: <strong>${state.stocks.length}</strong><br>
+        Portföy işlemi: <strong>${state.portfolio.length}</strong><br>
+        Aktif alarm: <strong>${state.alerts.length}</strong><br>
+        Favori: <strong>${state.favorites.length}</strong><br>
+        Fiyat geçmişi: <strong>${Object.keys(state.history).length} hisse</strong><br><br>
+        Kullanılan alan: <strong>${kb} KB</strong> / ${maxKB} KB<br>
+        <div style="background:var(--border);border-radius:4px;height:8px;margin-top:6px;overflow:hidden;">
+            <div style="background:${bytes/1024 > maxKB*0.8 ? 'var(--red)' : 'var(--green)'};height:100%;width:${Math.min((bytes/1024/maxKB)*100,100)}%;border-radius:4px;transition:width 0.3s;"></div>
+        </div>
+        <div style="margin-top:4px;font-size:11px;">
+            ${bytes/1024 > maxKB*0.8 ? '⚠️ Depolama alanı dolmak üzere!' : '✅ Yeterli alan mevcut'}
+        </div>
+    `;
+
+    // Save history
+    const histEl = document.getElementById('saveHistory');
+    if (state.saveLog.length === 0) {
+        histEl.innerHTML = '<div style="color:var(--text-secondary);font-size:13px;">Henüz kayıt yok</div>';
+    } else {
+        histEl.innerHTML = state.saveLog.slice(0, 10).map((log, i) => `
+            <div style="display:flex;justify-content:space-between;padding:6px 10px;background:${i%2===0?'var(--bg-card)':'transparent'};border-radius:4px;font-size:12px;">
+                <span>${log.time}</span>
+                <span style="color:var(--text-secondary)">${(log.size/1024).toFixed(1)} KB</span>
+            </div>
+        `).join('');
+    }
+
+    // Bar counts
+    document.getElementById('barStockCount').textContent = state.stocks.length;
+    document.getElementById('barPortCount').textContent = state.portfolio.length;
+    document.getElementById('barAlertCount').textContent = state.alerts.length;
+}
+
+// ==============================
+//  SIMULATION
+// ==============================
+function tick() {
+    state.stocks.forEach(s => {
+        const v = 0.007;
+        const ch = (Math.random() - 0.48) * s.price * v;
+        s.prevPrice = s.price;
+        s.price = +(s.price + ch).toFixed(2);
+        s.change = +(s.price - s.open).toFixed(2);
+        s.changePct = +((s.change / s.open) * 100).toFixed(2);
+        s.high = Math.max(s.high, s.price);
+        s.low = Math.min(s.low, s.price);
+        s.volume += Math.floor(Math.random() * 80000);
+        if (state.history[s.symbol]) {
+            state.history[s.symbol].push(s.price);
+            if (state.history[s.symbol].length > 50) state.history[s.symbol].shift();
+        }
+    });
+    autoSave();
+    render();
+}
+
+function refreshAll() {
+    state.stocks.forEach(s => {
+        const d = DB[s.symbol];
+        if (d) {
+            const ch = (Math.random()-0.45)*d.p*0.08;
+            s.price = +(d.p+ch).toFixed(2);
+            s.change = +ch.toFixed(2);
+            s.changePct = +((ch/d.p)*100).toFixed(2);
+            s.volume = Math.floor(Math.random()*50e6)+1e6;
+            s.high = +(s.price*(1+Math.random()*0.03)).toFixed(2);
+            s.low = +(s.price*(1-Math.random()*0.03)).toFixed(2);
+        }
+    });
+    autoSave();
+    render();
+    toast('Tüm fiyatlar güncellendi', 'success');
+}
+
+// ==============================
+//  RENDER
+// ==============================
+function render() {
+    renderWatch();
+    renderPortfolio();
+    renderAlerts();
+    renderSummary();
+    updateDataStats();
+}
+
+function renderWatch() {
+    const tbody = document.getElementById('tBody');
+    const empty = document.getElementById('watchEmpty');
+    let list = [...state.stocks];
+
+    // search
+    const q = (document.getElementById('searchInput')?.value || '').toUpperCase();
+    if (q) list = list.filter(s => s.symbol.includes(q) || s.name.toUpperCase().includes(q));
+
+    // filter
+    if (filter === 'up') list = list.filter(s => s.change >= 0);
+    else if (filter === 'down') list = list.filter(s => s.change < 0);
+    else if (filter === 'fav') list = list.filter(s => state.favorites.includes(s.symbol));
+
+    // sort
+    list.sort((a, b) => {
+        let va = a[sort.key], vb = b[sort.key];
+        if (typeof va === 'string') return sort.asc ? va.localeCompare(vb) : vb.localeCompare(va);
+        return sort.asc ? va - vb : vb - va;
+    });
+
+    if (list.length === 0) { tbody.innerHTML = ''; empty.style.display = ''; return; }
+    empty.style.display = 'none';
+
+    tbody.innerHTML = list.map(s => {
+        const up = s.change >= 0;
+        const arrow = up ? '▲' : '▼';
+        const isFav = state.favorites.includes(s.symbol);
+        const flash = s.prevPrice !== s.price ? (s.price > s.prevPrice ? 'flash-green' : 'flash-red') : '';
+
+        return `<tr class="${flash}" onclick="showDetail('${s.symbol}')">
+            <td><div class="stock-cell">
+                <div class="stock-avatar" style="background:${s.color}">${s.symbol.slice(0,2)}</div>
+                <div><div class="stock-sym">${s.symbol}</div><div class="stock-name-sub">${s.name}</div></div>
+            </div></td>
+            <td><span class="price-val">₺${s.price.toLocaleString('tr-TR',{minimumFractionDigits:2})}</span></td>
+            <td class="${up?'pos':'neg'}">${up?'+':''}${s.change.toFixed(2)}</td>
+            <td><span class="badge ${up?'pos-bg':'neg-bg'}">${arrow} ${up?'+':''}${s.changePct.toFixed(2)}%</span></td>
+            <td class="hide-m vol">${fmtVol(s.volume)}</td>
+            <td class="hide-m">₺${s.high.toFixed(2)}</td>
+            <td class="hide-m">₺${s.low.toFixed(2)}</td>
+            <td class="hide-m"><canvas class="mini-chart" id="mc-${s.symbol}" width="70" height="28"></canvas></td>
+            <td onclick="event.stopPropagation()">
+                <div class="action-btns">
+                    <button class="act-btn ${isFav?'fav-on':''}" onclick="toggleFav('${s.symbol}')">${isFav?'★':'☆'}</button>
+                    <button class="act-btn del" onclick="removeStock('${s.symbol}')">✕</button>
+                </div>
+            </td>
+        </tr>`;
+    }).join('');
+
+    setTimeout(() => list.forEach(s => drawMini(s.symbol)), 50);
+}
+
+function renderPortfolio() {
+    const tbody = document.getElementById('portBody');
+    const empty = document.getElementById('portEmpty');
+
+    if (state.portfolio.length === 0) { tbody.innerHTML = ''; empty.style.display = ''; return; }
+    empty.style.display = 'none';
+
+    tbody.innerHTML = state.portfolio.map((item, i) => {
+        const s = state.stocks.find(x => x.symbol === item.symbol);
+        const cur = s ? s.price : item.buyPrice;
+        const val = cur * item.lots;
+        const cost = item.buyPrice * item.lots;
+        const pl = val - cost;
+        const pct = cost > 0 ? ((pl/cost)*100) : 0;
+        const up = pl >= 0;
+        const col = s ? s.color : COLORS[i % COLORS.length];
+
+        return `<tr>
+            <td><div class="stock-cell">
+                <div class="stock-avatar" style="background:${col}">${item.symbol.slice(0,2)}</div>
+                <div><div class="stock-sym">${item.symbol}</div><div class="stock-name-sub">${item.date||''}</div></div>
+            </div></td>
+            <td><strong>${item.lots}</strong></td>
+            <td>₺${item.buyPrice.toFixed(2)}</td>
+            <td class="price-val">₺${cur.toFixed(2)}</td>
+            <td><strong>₺${val.toLocaleString('tr-TR',{minimumFractionDigits:2})}</strong></td>
+            <td class="${up?'pos':'neg'}"><strong>${up?'+':''}₺${pl.toFixed(2)}</strong></td>
+            <td><span class="badge ${up?'pos-bg':'neg-bg'}">${up?'+':''}${pct.toFixed(2)}%</span></td>
+            <td><button class="act-btn del" onclick="removePortfolio(${i})">✕</button></td>
+        </tr>`;
+    }).join('');
+}
+
+function renderAlerts() {
+    const el = document.getElementById('alertList');
+    const empty = document.getElementById('alertEmpty');
+
+    if (state.alerts.length === 0) { el.innerHTML = ''; empty.style.display = ''; return; }
+    empty.style.display = 'none';
+
+    el.innerHTML = state.alerts.map((a, i) => {
+        const s = state.stocks.find(x => x.symbol === a.symbol);
+        const cur = s ? s.price : 0;
+        return `<div class="alert-card">
+            <div class="alert-left">
+                <strong>${a.symbol}</strong>
+                <span class="alert-tag ${a.condition==='above'?'up':'down'}">${a.condition==='above'?'Üstüne Çıkarsa':'Altına Düşerse'}</span>
+                <span>₺${a.price.toFixed(2)}</span>
+                <span style="color:var(--text-secondary);font-size:11px">(şu an: ₺${cur.toFixed(2)})</span>
+            </div>
+            <button class="act-btn del" onclick="removeAlert(${i})">✕</button>
+        </div>`;
+    }).join('');
+}
+
+function renderSummary() {
+    let totalVal = 0, totalCost = 0, dailyPL = 0;
+    state.portfolio.forEach(item => {
+        const s = state.stocks.find(x => x.symbol === item.symbol);
+        const pr = s ? s.price : item.buyPrice;
+        const op = s ? s.open : item.buyPrice;
+        totalVal += pr * item.lots;
+        totalCost += item.buyPrice * item.lots;
+        dailyPL += (pr - op) * item.lots;
+    });
+
+    const totalPL = totalVal - totalCost;
+    const totalPct = totalCost > 0 ? ((totalPL/totalCost)*100) : 0;
+    const dailyPct = totalCost > 0 ? ((dailyPL/totalCost)*100) : 0;
+
+    document.getElementById('sumValue').textContent = `₺${totalVal.toLocaleString('tr-TR',{minimumFractionDigits:2})}`;
+    const dEl = document.getElementById('sumDaily');
+    dEl.textContent = `${dailyPL>=0?'+':''}₺${dailyPL.toFixed(2)}`;
+    dEl.className = `value ${dailyPL>=0?'pos':'neg'}`;
+    document.getElementById('sumDailySub').textContent = `${dailyPct>=0?'+':''}${dailyPct.toFixed(2)}%`;
+    document.getElementById('sumDailySub').className = `sub ${dailyPL>=0?'pos':'neg'}`;
+
+    const tEl = document.getElementById('sumTotal');
+    tEl.textContent = `${totalPL>=0?'+':''}₺${totalPL.toFixed(2)}`;
+    tEl.className = `value ${totalPL>=0?'pos':'neg'}`;
+    document.getElementById('sumTotalSub').textContent = `${totalPct>=0?'+':''}${totalPct.toFixed(2)}%`;
+    document.getElementById('sumTotalSub').className = `sub ${totalPL>=0?'pos':'neg'}`;
+
+    document.getElementById('sumCount').textContent = state.stocks.length;
+}
+
+// ==============================
+//  CHARTS
+// ==============================
+function drawMini(sym) {
+    const c = document.getElementById(`mc-${sym}`);
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const d = state.history[sym] || [];
+    if (d.length < 2) return;
+    const w = c.width, h = c.height;
+    ctx.clearRect(0,0,w,h);
+    const mn = Math.min(...d), mx = Math.max(...d), rng = mx-mn||1;
+    const up = d[d.length-1] >= d[0];
+    ctx.strokeStyle = up ? '#10b981' : '#ef4444';
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    d.forEach((p,i) => {
+        const x = (i/(d.length-1))*w;
+        const y = h - ((p-mn)/rng)*(h-4) - 2;
+        i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+    const g = ctx.createLinearGradient(0,0,0,h);
+    g.addColorStop(0, up?'rgba(16,185,129,0.12)':'rgba(239,68,68,0.12)');
+    g.addColorStop(1, 'transparent');
+    ctx.lineTo(w,h); ctx.lineTo(0,h); ctx.closePath();
+    ctx.fillStyle = g; ctx.fill();
+}
+
+function drawBig(sym) {
+    const c = document.getElementById('bigChart');
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const d = state.history[sym] || [];
+    if (d.length < 2) return;
+    const rect = c.parentElement.getBoundingClientRect();
+    c.width = rect.width - 32; c.height = 180;
+    const w = c.width, h = c.height, pad = 30;
+    ctx.clearRect(0,0,w,h);
+    const mn = Math.min(...d), mx = Math.max(...d), rng = mx-mn||1;
+    const up = d[d.length-1] >= d[0];
+
+    ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth = 1;
+    for (let i=0;i<=4;i++) {
+        const y = pad + (i/4)*(h-2*pad);
+        ctx.beginPath(); ctx.moveTo(pad,y); ctx.lineTo(w-pad,y); ctx.stroke();
+        ctx.fillStyle = '#8892a4'; ctx.font = '10px system-ui'; ctx.textAlign = 'right';
+        ctx.fillText('₺'+(mx-(i/4)*rng).toFixed(2), pad-4, y+3);
+    }
+
+    ctx.strokeStyle = up?'#10b981':'#ef4444'; ctx.lineWidth = 2; ctx.beginPath();
+    const pts = [];
+    d.forEach((p,i) => {
+        const x = pad + (i/(d.length-1))*(w-2*pad);
+        const y = pad + ((mx-p)/rng)*(h-2*pad);
+        pts.push({x,y}); i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+
+    const g = ctx.createLinearGradient(0,pad,0,h-pad);
+    g.addColorStop(0, up?'rgba(16,185,129,0.15)':'rgba(239,68,68,0.15)');
+    g.addColorStop(1, 'transparent');
+    ctx.lineTo(w-pad,h-pad); ctx.lineTo(pad,h-pad); ctx.closePath();
+    ctx.fillStyle = g; ctx.fill();
+
+    const last = pts[pts.length-1];
+    ctx.beginPath(); ctx.arc(last.x,last.y,4,0,Math.PI*2);
+    ctx.fillStyle = up?'#10b981':'#ef4444'; ctx.fill();
+    ctx.strokeStyle='white'; ctx.lineWidth=2; ctx.stroke();
+}
+
+// ==============================
+//  DETAIL
+// ==============================
+function showDetail(sym) {
+    const s = state.stocks.find(x => x.symbol === sym);
+    if (!s) return;
+    const up = s.change >= 0;
+    document.getElementById('detailTitle').innerHTML = `
+        <div class="stock-avatar" style="background:${s.color};width:36px;height:36px;font-size:12px;">${s.symbol.slice(0,2)}</div>
+        ${s.symbol} - ${s.name}`;
+
+    document.getElementById('detailGrid').innerHTML = `
+        <div class="detail-box"><div class="lbl">Fiyat</div><div class="val ${up?'pos':'neg'}">₺${s.price.toFixed(2)}</div></div>
+        <div class="detail-box"><div class="lbl">Değişim</div><div class="val ${up?'pos':'neg'}">${up?'+':''}${s.change.toFixed(2)} (${up?'+':''}${s.changePct.toFixed(2)}%)</div></div>
+        <div class="detail-box"><div class="lbl">Açılış</div><div class="val">₺${s.open.toFixed(2)}</div></div>
+        <div class="detail-box"><div class="lbl">Yüksek</div><div class="val pos">₺${s.high.toFixed(2)}</div></div>
+        <div class="detail-box"><div class="lbl">Düşük</div><div class="val neg">₺${s.low.toFixed(2)}</div></div>
+        <div class="detail-box"><div class="lbl">Hacim</div><div class="val">${fmtVol(s.volume)}</div></div>
+        <div class="detail-box"><div class="lbl">Sektör</div><div class="val" style="font-size:13px">${s.sector}</div></div>
+        <div class="detail-box"><div class="lbl">Aralık</div><div class="val" style="font-size:13px">₺${s.low.toFixed(2)} - ₺${s.high.toFixed(2)}</div></div>`;
+
+    document.getElementById('detailPanel').classList.add('open');
+    setTimeout(() => drawBig(sym), 100);
+    document.getElementById('detailPanel').scrollIntoView({ behavior: 'smooth' });
+}
+
+function closeDetail() { document.getElementById('detailPanel').classList.remove('open'); }
+
+// ==============================
+//  ACTIONS
+// ==============================
+function addStock() {
+    let sym = document.getElementById('selStock').value || document.getElementById('manSym').value.toUpperCase().trim();
+    if (!sym) { toast('Hisse seçin/girin','error'); return; }
+    if (state.stocks.find(s => s.symbol === sym)) { toast(sym+' zaten listede','warning'); return; }
+    const d = DB[sym];
+    const pr = parseFloat(document.getElementById('manPrice').value) || (d ? d.p : 100);
+    const sec = document.getElementById('manSector').value || (d ? d.s : 'Diğer');
+    state.stocks.push(makeStock(sym, d ? d.n : sym, pr, sec));
+    autoSave(); fillSelects(); render();
+    closeModal('addModal');
+    toast(sym + ' eklendi', 'success');
+    document.getElementById('selStock').value = '';
+    document.getElementById('manSym').value = '';
+    document.getElementById('manPrice').value = '';
+}
+
+function removeStock(sym) {
+    state.stocks = state.stocks.filter(s => s.symbol !== sym);
+    state.favorites = state.favorites.filter(f => f !== sym);
+    delete state.history[sym];
+    autoSave(); fillSelects(); render();
+    toast(sym + ' kaldırıldı', 'info');
+}
+
+function toggleFav(sym) {
+    const i = state.favorites.indexOf(sym);
+    if (i >= 0) state.favorites.splice(i, 1);
+    else state.favorites.push(sym);
+    autoSave(); renderWatch();
+}
+
+function addPortfolio() {
+    const sym = document.getElementById('portSel').value;
+    const lots = parseInt(document.getElementById('portLot').value);
+    const pr = parseFloat(document.getElementById('portPrice').value);
+    const dt = document.getElementById('portDate').value;
+    if (!sym||!lots||!pr) { toast('Alanları doldurun','error'); return; }
+    state.portfolio.push({ symbol:sym, lots, buyPrice:pr, date:dt });
+    autoSave(); render();
+    closeModal('portModal');
+    toast(`${lots} lot ${sym} eklendi`, 'success');
+    document.getElementById('portLot').value = '';
+    document.getElementById('portPrice').value = '';
+}
+
+function removePortfolio(i) {
+    state.portfolio.splice(i, 1);
+    autoSave(); render();
+    toast('İşlem kaldırıldı', 'info');
+}
+
+function addAlert() {
+    const sym = document.getElementById('alertSel').value;
+    const cond = document.getElementById('alertCond').value;
+    const pr = parseFloat(document.getElementById('alertPr').value);
+    if (!sym||!pr) { toast('Alanları doldurun','error'); return; }
+    state.alerts.push({ symbol:sym, condition:cond, price:pr, active:true });
+    autoSave(); render();
+    closeModal('alertModal');
+    toast(`${sym} alarm kuruldu`, 'success');
+    document.getElementById('alertPr').value = '';
+}
+
+function removeAlert(i) {
+    state.alerts.splice(i, 1);
+    autoSave(); render();
+    toast('Alarm silindi', 'info');
+}
+
+function checkAlerts() {
+    state.alerts.forEach((a, i) => {
+        if (!a.active) return;
+        const s = state.stocks.find(x => x.symbol === a.symbol);
+        if (!s) return;
+        let hit = false;
+        if (a.condition === 'above' && s.price >= a.price) hit = true;
+        if (a.condition === 'below' && s.price <= a.price) hit = true;
+        if (hit) {
+            a.active = false;
+            toast(`🔔 ${a.symbol} ₺${a.price} ${a.condition==='above'?'üstüne çıktı':'altına düştü'}! (₺${s.price.toFixed(2)})`, 'warning');
+            autoSave(); render();
+        }
+    });
+}
+
+// ==============================
+//  UI HELPERS
+// ==============================
+function switchTab(tab, btn) {
+    activeTab = tab;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tabWatch').style.display = tab==='watch'?'':'none';
+    document.getElementById('tabPort').style.display = tab==='port'?'':'none';
+    document.getElementById('tabAlert').style.display = tab==='alert'?'':'none';
+    document.getElementById('tabData').style.display = tab==='data'?'':'none';
+    if (tab === 'data') updateDataStats();
+}
+
+function setFilter(f, btn) {
+    filter = f;
+    document.querySelectorAll('.filter-group .btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderWatch();
+}
+
+function setSort(key) {
+    if (sort.key === key) sort.asc = !sort.asc;
+    else { sort.key = key; sort.asc = true; }
+    renderWatch();
+}
+
+function openModal(id) {
+    if (id === 'portModal') {
+        updateSelect('portSel');
+        document.getElementById('portDate').valueAsDate = new Date();
+    }
+    if (id === 'alertModal') updateSelect('alertSel');
+    document.getElementById(id).classList.add('open');
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function fillSelects() {
+    const sel = document.getElementById('selStock');
+    const existing = new Set(state.stocks.map(s => s.symbol));
+    sel.innerHTML = '<option value="">Seçin...</option>';
+    Object.entries(DB).forEach(([sym, info]) => {
+        if (!existing.has(sym)) sel.innerHTML += `<option value="${sym}">${sym} - ${info.n}</option>`;
+    });
+    updateSelect('portSel');
+    updateSelect('alertSel');
+}
+
+function updateSelect(id) {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    sel.innerHTML = '<option value="">Seçin...</option>';
+    state.stocks.forEach(s => {
+        sel.innerHTML += `<option value="${s.symbol}">${s.symbol} - ₺${s.price.toFixed(2)}</option>`;
+    });
+}
+
+function fmtVol(v) {
+    if (v >= 1e9) return (v/1e9).toFixed(1)+'B';
+    if (v >= 1e6) return (v/1e6).toFixed(1)+'M';
+    if (v >= 1e3) return (v/1e3).toFixed(0)+'K';
+    return v+'';
+}
+
+function updateClock() {
+    const now = new Date();
+    document.getElementById('clock').textContent = '⏰ ' + now.toLocaleTimeString('tr-TR', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+
+function toast(msg, type='info') {
+    const icons = {success:'✅',error:'❌',warning:'⚠️',info:'ℹ️'};
+    const el = document.createElement('div');
+    el.className = `toast-item t-${type}`;
+    el.innerHTML = `<span>${icons[type]}</span><span>${msg}</span>`;
+    document.getElementById('toasts').appendChild(el);
+    setTimeout(() => el.remove(), 3500);
+}
+
+// Close modals on backdrop
+document.querySelectorAll('.modal-bg').forEach(m => {
+    m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+});
+
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-bg').forEach(m => m.classList.remove('open'));
+        closeDetail();
+    }
+});
+
+// Warn before leaving if unsaved
+window.addEventListener('beforeunload', e => {
+    if (dataChanged) {
+        saveState(); // Force save
+    }
+});
+
+// START
+init();
+</script>
+</body>
+</html>
