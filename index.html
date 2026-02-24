@@ -3,1248 +3,718 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📈 Hisse Takip - BIST100 Canlı</title>
+    <title>📈 BIST100 Hisse Takip</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
-        :root{
-            --bg:#0a0e17;--bg2:#131a2a;--card:#1a2235;--card2:#1f2b42;
-            --tx:#e2e8f0;--tx2:#8892a4;--acc:#3b82f6;
-            --grn:#10b981;--grn-bg:rgba(16,185,129,.1);
-            --red:#ef4444;--red-bg:rgba(239,68,68,.1);
-            --ylw:#f59e0b;--brd:#2a3548
-        }
+        :root{--bg:#0a0e17;--bg2:#131a2a;--card:#1a2235;--card2:#1f2b42;--tx:#e2e8f0;--tx2:#8892a4;--acc:#3b82f6;--grn:#10b981;--grn2:rgba(16,185,129,.1);--red:#ef4444;--red2:rgba(239,68,68,.1);--ylw:#f59e0b;--brd:#2a3548}
         body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--tx);min-height:100vh}
-
-        /* HEADER */
-        .hdr{background:var(--bg2);border-bottom:1px solid var(--brd);padding:12px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;position:sticky;top:0;z-index:100}
-        .hdr-l{display:flex;align-items:center;gap:10px}
-        .hdr h1{font-size:18px;background:linear-gradient(135deg,#3b82f6,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-        .hdr-r{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-        .hdr-badge{font-size:12px;padding:5px 10px;border-radius:6px;background:var(--card);border:1px solid var(--brd);display:flex;align-items:center;gap:5px}
-        .dot{width:7px;height:7px;border-radius:50%;animation:pulse 2s infinite}
-        .dot.on{background:var(--grn)}.dot.off{background:var(--red);animation:none}.dot.sync{background:var(--ylw)}
-        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-
-        /* SYNC BAR */
-        .sync-bar{background:var(--bg2);border-bottom:1px solid var(--brd);padding:6px 20px;display:flex;align-items:center;gap:14px;font-size:11px;color:var(--tx2);overflow-x:auto}
-        .sync-bar strong{color:var(--tx)}
-
-        .container{max-width:1440px;margin:0 auto;padding:16px}
-
-        /* CARDS */
-        .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px}
-        .card{background:var(--card);border:1px solid var(--brd);border-radius:10px;padding:16px;transition:all .2s}
-        .card:hover{transform:translateY(-2px);border-color:var(--acc)}
-        .card .lbl{font-size:10px;color:var(--tx2);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
-        .card .val{font-size:20px;font-weight:700}
-        .card .sub{font-size:11px;margin-top:2px}
-
-        /* TABS */
-        .tabs{display:flex;gap:3px;margin-bottom:14px;background:var(--bg2);padding:3px;border-radius:8px;width:fit-content}
-        .tab{padding:7px 14px;border:none;background:0;color:var(--tx2);font-size:12px;font-weight:500;cursor:pointer;border-radius:6px;transition:all .2s}
+        .hdr{background:var(--bg2);border-bottom:1px solid var(--brd);padding:10px 16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;position:sticky;top:0;z-index:100}
+        .hdr-l{display:flex;align-items:center;gap:8px}
+        .hdr h1{font-size:16px;background:linear-gradient(135deg,#3b82f6,#8b5cf6);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .hdr-r{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+        .hb{font-size:11px;padding:4px 8px;border-radius:5px;background:var(--card);border:1px solid var(--brd);display:flex;align-items:center;gap:4px}
+        .dot{width:6px;height:6px;border-radius:50%;animation:p 2s infinite}
+        .dot.on{background:var(--grn)}.dot.off{background:var(--red);animation:none}.dot.sy{background:var(--ylw)}
+        @keyframes p{0%,100%{opacity:1}50%{opacity:.4}}
+        .sb{background:var(--bg2);border-bottom:1px solid var(--brd);padding:5px 16px;display:flex;align-items:center;gap:12px;font-size:10px;color:var(--tx2);overflow-x:auto}
+        .sb strong{color:var(--tx)}
+        .ct{max-width:1440px;margin:0 auto;padding:14px}
+        .cds{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:14px}
+        .cd{background:var(--card);border:1px solid var(--brd);border-radius:9px;padding:14px;transition:all .2s}
+        .cd:hover{transform:translateY(-2px);border-color:var(--acc)}
+        .cd .l{font-size:9px;color:var(--tx2);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+        .cd .v{font-size:18px;font-weight:700}
+        .cd .s{font-size:10px;margin-top:2px}
+        .tabs{display:flex;gap:2px;margin-bottom:12px;background:var(--bg2);padding:3px;border-radius:7px;width:fit-content}
+        .tab{padding:6px 12px;border:none;background:0;color:var(--tx2);font-size:11px;font-weight:500;cursor:pointer;border-radius:5px;transition:all .2s}
         .tab.on{background:var(--acc);color:#fff}.tab:hover:not(.on){background:var(--card);color:var(--tx)}
-
-        /* CONTROLS */
-        .ctrl{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
-        .sbox{flex:1;min-width:180px;position:relative}
-        .sbox input{width:100%;padding:9px 12px 9px 34px;background:var(--card);border:1px solid var(--brd);border-radius:7px;color:var(--tx);font-size:12px;outline:0}
-        .sbox input:focus{border-color:var(--acc)}
-        .sbox::before{content:'🔍';position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:13px}
-
-        .btn{padding:8px 14px;border:none;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
-        .btn-p{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff}
-        .btn-p:hover{box-shadow:0 4px 12px rgba(59,130,246,.3)}
-        .btn-s{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
-        .btn-d{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff}
-        .btn-w{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff}
-        .btn-o{background:0;border:1px solid var(--brd);color:var(--tx)}
-        .btn-o:hover{border-color:var(--acc);background:rgba(59,130,246,.08)}
-        .btn-o.on{border-color:var(--acc);background:rgba(59,130,246,.12);color:var(--acc)}
-        .btn-sm{padding:6px 10px;font-size:11px}
-        .fgrp{display:flex;gap:2px}
-
-        /* TABLE */
-        .tw{background:var(--card);border:1px solid var(--brd);border-radius:10px;overflow:hidden}
+        .ctrl{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
+        .sbx{flex:1;min-width:160px;position:relative}
+        .sbx input{width:100%;padding:8px 10px 8px 30px;background:var(--card);border:1px solid var(--brd);border-radius:6px;color:var(--tx);font-size:11px;outline:0}
+        .sbx input:focus{border-color:var(--acc)}
+        .sbx::before{content:'🔍';position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:12px}
+        .btn{padding:7px 12px;border:none;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:3px;white-space:nowrap}
+        .bp{background:linear-gradient(135deg,#3b82f6,#2563eb);color:#fff}
+        .bp:hover{box-shadow:0 3px 10px rgba(59,130,246,.3)}
+        .bs{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
+        .bd{background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff}
+        .bw{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff}
+        .bo{background:0;border:1px solid var(--brd);color:var(--tx)}.bo:hover{border-color:var(--acc);background:rgba(59,130,246,.08)}
+        .bo.on{border-color:var(--acc);background:rgba(59,130,246,.12);color:var(--acc)}
+        .bsm{padding:5px 8px;font-size:10px}
+        .fg{display:flex;gap:2px}
+        .tw{background:var(--card);border:1px solid var(--brd);border-radius:9px;overflow:hidden}
         table{width:100%;border-collapse:collapse}
-        thead th{background:var(--bg2);padding:10px 12px;text-align:left;font-size:10px;font-weight:600;color:var(--tx2);text-transform:uppercase;letter-spacing:.5px;cursor:pointer;white-space:nowrap}
+        thead th{background:var(--bg2);padding:8px 10px;text-align:left;font-size:9px;font-weight:600;color:var(--tx2);text-transform:uppercase;letter-spacing:.5px;cursor:pointer;white-space:nowrap}
         thead th:hover{color:var(--acc)}
         tbody tr{border-bottom:1px solid var(--brd);transition:background .15s;cursor:pointer}
-        tbody tr:last-child{border-bottom:0}
-        tbody tr:hover{background:var(--card2)}
-        tbody td{padding:10px 12px;font-size:12px}
-
-        .sc{display:flex;align-items:center;gap:8px}
-        .av{width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10px;color:#fff;flex-shrink:0}
-        .sn{font-weight:700;font-size:12px}
-        .sn2{font-size:10px;color:var(--tx2)}
-        .pv{font-weight:700;font-size:13px;font-family:'Courier New',monospace}
+        tbody tr:last-child{border-bottom:0}tbody tr:hover{background:var(--card2)}
+        tbody td{padding:8px 10px;font-size:11px}
+        .sc{display:flex;align-items:center;gap:7px}
+        .av{width:28px;height:28px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:9px;color:#fff;flex-shrink:0}
+        .sn{font-weight:700;font-size:11px}.sn2{font-size:9px;color:var(--tx2)}
+        .pv{font-weight:700;font-size:12px;font-family:'Courier New',monospace}
         .pos{color:var(--grn)}.neg{color:var(--red)}
-        .bg{display:inline-flex;align-items:center;gap:2px;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:600}
-        .bg.p{background:var(--grn-bg);color:var(--grn)}.bg.n{background:var(--red-bg);color:var(--red)}
-        .vol{color:var(--tx2);font-family:'Courier New',monospace;font-size:11px}
-
-        .mc{width:60px;height:24px}
-
-        .abtn{display:flex;gap:3px}
-        .ab{width:26px;height:26px;border:1px solid var(--brd);background:0;color:var(--tx2);border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .2s}
-        .ab:hover{border-color:var(--acc);color:var(--acc)}
-        .ab.fon{color:var(--ylw);border-color:var(--ylw)}
-        .ab.dl:hover{border-color:var(--red);color:var(--red)}
-
-        .fg{animation:fg .5s}
-        .fr{animation:fr .5s}
-        @keyframes fg{0%{background:rgba(16,185,129,.2)}100%{background:0}}
-        @keyframes fr{0%{background:rgba(239,68,68,.2)}100%{background:0}}
-
-        /* DETAIL */
-        .dp{display:none;background:var(--card);border:1px solid var(--brd);border-radius:10px;margin-top:14px;overflow:hidden}
+        .bg{display:inline-flex;align-items:center;gap:2px;padding:2px 6px;border-radius:3px;font-size:10px;font-weight:600}
+        .bg.p{background:var(--grn2);color:var(--grn)}.bg.n{background:var(--red2);color:var(--red)}
+        .vol{color:var(--tx2);font-family:'Courier New',monospace;font-size:10px}
+        .mc{width:55px;height:22px}
+        .abt{display:flex;gap:2px}
+        .ab{width:24px;height:24px;border:1px solid var(--brd);background:0;color:var(--tx2);border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .2s}
+        .ab:hover{border-color:var(--acc);color:var(--acc)}.ab.fo{color:var(--ylw);border-color:var(--ylw)}.ab.dl:hover{border-color:var(--red);color:var(--red)}
+        .flg{animation:flg .5s}
+        .flr{animation:flr .5s}
+        @keyframes flg{0%{background:rgba(16,185,129,.2)}100%{background:0}}
+        @keyframes flr{0%{background:rgba(239,68,68,.2)}100%{background:0}}
+        .dp{display:none;background:var(--card);border:1px solid var(--brd);border-radius:9px;margin-top:12px;overflow:hidden}
         .dp.open{display:block}
-        .dp-top{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--brd)}
-        .dp-top h2{font-size:16px;display:flex;align-items:center;gap:8px}
-        .dp-body{padding:18px}
-        .dg{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
-        .db{background:var(--bg2);padding:10px;border-radius:6px}
-        .db .l{font-size:9px;color:var(--tx2);text-transform:uppercase;letter-spacing:.5px}
-        .db .v{font-size:15px;font-weight:700;margin-top:2px}
-        .ca{background:var(--bg2);border-radius:6px;padding:14px}
-        .cc{width:100%;height:160px}
-
-        /* MODAL */
+        .dpt{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid var(--brd)}
+        .dpt h2{font-size:14px;display:flex;align-items:center;gap:7px}
+        .dpb{padding:16px}
+        .dg{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-bottom:12px}
+        .db{background:var(--bg2);padding:9px;border-radius:5px}
+        .db .dl{font-size:8px;color:var(--tx2);text-transform:uppercase;letter-spacing:.5px}
+        .db .dv{font-size:14px;font-weight:700;margin-top:2px}
+        .ca{background:var(--bg2);border-radius:5px;padding:12px}
+        .cc{width:100%;height:150px}
         .mo{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
         .mo.open{display:flex}
-        .mb{background:var(--bg2);border:1px solid var(--brd);border-radius:12px;padding:22px;width:94%;max-width:460px;max-height:85vh;overflow-y:auto}
-        .mb h2{font-size:16px;margin-bottom:16px;display:flex;align-items:center;gap:7px}
-        .fd{margin-bottom:12px}
-        .fd label{display:block;font-size:11px;font-weight:500;color:var(--tx2);margin-bottom:4px}
-        .fd input,.fd select{width:100%;padding:9px 11px;background:var(--card);border:1px solid var(--brd);border-radius:6px;color:var(--tx);font-size:12px;outline:0}
+        .mb{background:var(--bg2);border:1px solid var(--brd);border-radius:11px;padding:20px;width:94%;max-width:440px;max-height:85vh;overflow-y:auto}
+        .mb h2{font-size:15px;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+        .fd{margin-bottom:10px}
+        .fd label{display:block;font-size:10px;font-weight:500;color:var(--tx2);margin-bottom:3px}
+        .fd input,.fd select{width:100%;padding:8px 10px;background:var(--card);border:1px solid var(--brd);border-radius:5px;color:var(--tx);font-size:11px;outline:0}
         .fd input:focus,.fd select:focus{border-color:var(--acc)}
-        .fr2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-        .ma{display:flex;gap:7px;margin-top:4px}
-        .ma .btn{flex:1;justify-content:center}
-
-        /* CLOUD SETUP */
-        .setup-box{background:var(--card);border:2px dashed var(--acc);border-radius:12px;padding:24px;margin-bottom:20px;text-align:center}
-        .setup-box h2{font-size:18px;margin-bottom:12px;color:var(--acc)}
-        .setup-box p{font-size:13px;color:var(--tx2);margin-bottom:16px;line-height:1.6}
-        .setup-box .fd{text-align:left;max-width:400px;margin:0 auto 12px}
-
-        /* ALERT */
-        .alc{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--card);border:1px solid var(--brd);border-radius:6px;margin-bottom:5px}
-        .all{display:flex;align-items:center;gap:8px}
-        .at{padding:2px 6px;border-radius:3px;font-size:9px;font-weight:700;text-transform:uppercase}
-        .at.u{background:var(--grn-bg);color:var(--grn)}.at.d{background:var(--red-bg);color:var(--red)}
-
-        .empty{text-align:center;padding:40px 16px;color:var(--tx2)}
-        .empty .icon{font-size:36px;margin-bottom:10px}
-        .empty h3{font-size:14px;color:var(--tx);margin-bottom:4px}
-
-        /* TOAST */
-        .tbox{position:fixed;top:60px;right:16px;z-index:2000;display:flex;flex-direction:column;gap:5px}
-        .ti{background:var(--bg2);border:1px solid var(--brd);border-radius:7px;padding:8px 14px;display:flex;align-items:center;gap:6px;animation:tIn .3s;min-width:240px;box-shadow:0 6px 20px rgba(0,0,0,.3);font-size:12px}
+        .fr{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+        .ma{display:flex;gap:6px;margin-top:4px}.ma .btn{flex:1;justify-content:center}
+        .stp{background:var(--card);border:2px dashed var(--acc);border-radius:10px;padding:20px;margin-bottom:16px;text-align:center}
+        .stp h2{font-size:16px;margin-bottom:10px;color:var(--acc)}
+        .stp p{font-size:12px;color:var(--tx2);margin-bottom:14px;line-height:1.5}
+        .stp .fd{text-align:left;max-width:380px;margin:0 auto 10px}
+        .alc{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:var(--card);border:1px solid var(--brd);border-radius:5px;margin-bottom:4px}
+        .all{display:flex;align-items:center;gap:6px;font-size:11px}
+        .at{padding:2px 5px;border-radius:3px;font-size:8px;font-weight:700;text-transform:uppercase}
+        .at.u{background:var(--grn2);color:var(--grn)}.at.d{background:var(--red2);color:var(--red)}
+        .emp{text-align:center;padding:36px 14px;color:var(--tx2)}
+        .emp .ic{font-size:32px;margin-bottom:8px}
+        .emp h3{font-size:13px;color:var(--tx);margin-bottom:3px}
+        .tbx{position:fixed;top:55px;right:14px;z-index:2000;display:flex;flex-direction:column;gap:4px}
+        .ti{background:var(--bg2);border:1px solid var(--brd);border-radius:6px;padding:7px 12px;display:flex;align-items:center;gap:5px;animation:tI .3s;min-width:220px;box-shadow:0 5px 16px rgba(0,0,0,.3);font-size:11px}
         .ti.ts{border-left:3px solid var(--grn)}.ti.te{border-left:3px solid var(--red)}.ti.tw{border-left:3px solid var(--ylw)}.ti.tf{border-left:3px solid var(--acc)}
-        @keyframes tIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
-
-        .si{position:fixed;bottom:16px;right:16px;background:var(--bg2);border:1px solid var(--brd);border-radius:8px;padding:8px 14px;font-size:11px;display:flex;align-items:center;gap:6px;z-index:50;opacity:0;transition:opacity .3s}
+        @keyframes tI{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+        .ld{position:fixed;inset:0;background:rgba(10,14,23,.92);z-index:3000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+        .ld.hd{display:none}
+        .sp{width:36px;height:36px;border:3px solid var(--brd);border-top-color:var(--acc);border-radius:50%;animation:sp 1s linear infinite}
+        @keyframes sp{to{transform:rotate(360deg)}}
+        .ld p{font-size:13px;color:var(--tx2)}
+        .si{position:fixed;bottom:14px;right:14px;background:var(--bg2);border:1px solid var(--brd);border-radius:7px;padding:6px 12px;font-size:10px;display:flex;align-items:center;gap:5px;z-index:50;opacity:0;transition:opacity .3s}
         .si.vis{opacity:1}
-
-        /* Loading overlay */
-        .loading{position:fixed;inset:0;background:rgba(10,14,23,.9);z-index:3000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
-        .loading.hidden{display:none}
-        .spinner{width:40px;height:40px;border:3px solid var(--brd);border-top-color:var(--acc);border-radius:50%;animation:spin 1s linear infinite}
-        @keyframes spin{to{transform:rotate(360deg)}}
-        .loading p{font-size:14px;color:var(--tx2)}
-
-        @media(max-width:768px){
-            .hdr{padding:8px 12px}.container{padding:8px}
-            .cards{grid-template-columns:1fr 1fr;gap:6px}.card{padding:10px}.card .val{font-size:16px}
-            .ctrl{flex-direction:column}.sbox{min-width:100%}
-            .hm{display:none!important}
-        }
-
+        .prog-bar{width:100%;height:3px;background:var(--brd);border-radius:2px;overflow:hidden;margin-top:4px}
+        .prog-fill{height:100%;background:var(--acc);border-radius:2px;transition:width .3s;width:0%}
+        @media(max-width:768px){.hdr{padding:7px 10px}.ct{padding:8px}.cds{grid-template-columns:1fr 1fr;gap:6px}.cd{padding:10px}.cd .v{font-size:15px}.ctrl{flex-direction:column}.sbx{min-width:100%}.hm{display:none!important}}
         ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--brd);border-radius:2px}
     </style>
 </head>
 <body>
-
-<div class="loading" id="loader">
-    <div class="spinner"></div>
-    <p id="loaderText">Yükleniyor...</p>
-</div>
+<div class="ld" id="ld"><div class="sp"></div><p id="lt">Yükleniyor...</p><div class="prog-bar"><div class="prog-fill" id="pf"></div></div></div>
 
 <header class="hdr">
-    <div class="hdr-l">
-        <span style="font-size:22px">📊</span>
-        <h1>BIST100 Hisse Takip</h1>
-    </div>
+    <div class="hdr-l"><span style="font-size:20px">📊</span><h1>BIST100 Canlı Takip</h1></div>
     <div class="hdr-r">
-        <div class="hdr-badge"><span class="dot" id="cloudDot"></span><span id="cloudSt">Bağlanıyor...</span></div>
-        <div class="hdr-badge" id="priceSt">📡 Fiyat: -</div>
-        <div class="hdr-badge" id="clock">⏰ 00:00</div>
+        <div class="hb"><span class="dot" id="cDot"></span><span id="cSt">-</span></div>
+        <div class="hb" id="pSt">📡 -</div>
+        <div class="hb" id="clk">⏰ 00:00</div>
     </div>
 </header>
-
-<div class="sync-bar">
-    <span>☁️ Son Senkronizasyon: <strong id="lastSync">-</strong></span>
-    <span>📊 Hisse: <strong id="bCnt">0</strong></span>
-    <span>💼 Portföy: <strong id="bPrt">0</strong></span>
-    <span>🔔 Alarm: <strong id="bAlr">0</strong></span>
+<div class="sb">
+    <span>☁️ Senkron: <strong id="lSyn">-</strong></span>
+    <span>📊 <strong id="bC">0</strong> hisse</span>
+    <span>💼 <strong id="bP">0</strong> portföy</span>
+    <span>🔔 <strong id="bA">0</strong> alarm</span>
+    <span>📡 Kaynak: <strong id="apiSrc">-</strong></span>
 </div>
 
-<div class="container">
-    <!-- Cloud Setup -->
-    <div class="setup-box" id="setupBox" style="display:none">
-        <h2>☁️ Bulut Senkronizasyon Kurulumu</h2>
-        <p>Tüm cihazlarda aynı verileri görmek için <a href="https://jsonbin.io" target="_blank" style="color:var(--acc)">jsonbin.io</a>'da ücretsiz hesap açın ve API Key'inizi girin.</p>
-        <div class="fd">
-            <label>JSONBin API Key (X-Master-Key)</label>
-            <input type="text" id="apiKeyInput" placeholder="$2a$10$xxxxxxxxxxxxxxxxxxxx">
-        </div>
-        <div class="fd">
-            <label>Bin ID (varsa - yoksa boş bırakın, otomatik oluşturulur)</label>
-            <input type="text" id="binIdInput" placeholder="Opsiyonel">
-        </div>
-        <div class="ma">
-            <button class="btn btn-p" onclick="saveCloudConfig()">☁️ Bağlan</button>
-            <button class="btn btn-o" onclick="skipCloud()">Şimdilik Atla</button>
-        </div>
+<div class="ct">
+    <div class="stp" id="stpBox" style="display:none">
+        <h2>☁️ Bulut Senkronizasyon</h2>
+        <p><a href="https://jsonbin.io" target="_blank" style="color:var(--acc)">jsonbin.io</a> ücretsiz hesap açın, API Key alın.</p>
+        <div class="fd"><label>API Key</label><input type="text" id="akI" placeholder="$2a$10$..."></div>
+        <div class="fd"><label>Bin ID (opsiyonel)</label><input type="text" id="biI" placeholder="Otomatik oluşturulur"></div>
+        <div class="ma"><button class="btn bp" onclick="saveCfg()">☁️ Bağlan</button><button class="btn bo" onclick="skipC()">Atla</button></div>
     </div>
 
-    <!-- Summary -->
-    <div class="cards">
-        <div class="card"><div class="lbl">💰 Portföy Değeri</div><div class="val" id="sv">₺0</div><div class="sub" id="svs"></div></div>
-        <div class="card"><div class="lbl">📊 Günlük K/Z</div><div class="val" id="sd">₺0</div><div class="sub" id="sds"></div></div>
-        <div class="card"><div class="lbl">📈 Toplam K/Z</div><div class="val" id="st">₺0</div><div class="sub" id="sts"></div></div>
-        <div class="card"><div class="lbl">📋 Takip</div><div class="val" id="sc">0</div><div class="sub">hisse</div></div>
+    <div class="cds">
+        <div class="cd"><div class="l">💰 Portföy</div><div class="v" id="sv">₺0</div><div class="s" id="svs"></div></div>
+        <div class="cd"><div class="l">📊 Günlük</div><div class="v" id="sd">₺0</div><div class="s" id="sds"></div></div>
+        <div class="cd"><div class="l">📈 Toplam</div><div class="v" id="st">₺0</div><div class="s" id="sts"></div></div>
+        <div class="cd"><div class="l">📋 Takip</div><div class="v" id="scc">0</div><div class="s">hisse</div></div>
     </div>
 
-    <!-- Tabs -->
     <div class="tabs">
-        <button class="tab on" onclick="stab('watch',this)">📋 Takip</button>
-        <button class="tab" onclick="stab('port',this)">💼 Portföy</button>
-        <button class="tab" onclick="stab('alert',this)">🔔 Alarm</button>
-        <button class="tab" onclick="stab('cloud',this)">☁️ Bulut</button>
+        <button class="tab on" onclick="sTab('w',this)">📋 Takip</button>
+        <button class="tab" onclick="sTab('p',this)">💼 Portföy</button>
+        <button class="tab" onclick="sTab('a',this)">🔔 Alarm</button>
+        <button class="tab" onclick="sTab('c',this)">☁️ Bulut</button>
     </div>
 
-    <!-- WATCHLIST -->
-    <div id="tWatch">
+    <div id="tW">
         <div class="ctrl">
-            <div class="sbox"><input type="text" id="si" placeholder="Hisse ara (THYAO, ASELS...)" oninput="rndr()"></div>
-            <div class="fgrp">
-                <button class="btn btn-o btn-sm on" onclick="sf('all',this)">Tümü</button>
-                <button class="btn btn-o btn-sm" onclick="sf('up',this)">📈</button>
-                <button class="btn btn-o btn-sm" onclick="sf('dn',this)">📉</button>
-                <button class="btn btn-o btn-sm" onclick="sf('fav',this)">⭐</button>
+            <div class="sbx"><input type="text" id="sI" placeholder="Hisse ara..." oninput="R()"></div>
+            <div class="fg">
+                <button class="btn bo bsm on" onclick="sF('all',this)">Tümü</button>
+                <button class="btn bo bsm" onclick="sF('up',this)">📈</button>
+                <button class="btn bo bsm" onclick="sF('dn',this)">📉</button>
+                <button class="btn bo bsm" onclick="sF('fav',this)">⭐</button>
             </div>
-            <button class="btn btn-p" onclick="omod('addMod')">➕ Ekle</button>
-            <button class="btn btn-s" onclick="fetchPrices()">📡 Canlı Fiyat</button>
-            <button class="btn btn-w" onclick="syncToCloud()">☁️ Senkronize</button>
+            <button class="btn bp" onclick="oM('aM')">➕ Ekle</button>
+            <button class="btn bs" onclick="fetchAll()">📡 Canlı Fiyat Al</button>
+            <button class="btn bw" onclick="toCloud()">☁️ Senkronize</button>
         </div>
-        <div class="tw">
-            <table>
-                <thead><tr>
-                    <th onclick="ss('symbol')">Hisse ↕</th>
-                    <th onclick="ss('price')">Fiyat ↕</th>
-                    <th onclick="ss('change')">Değişim ↕</th>
-                    <th onclick="ss('changePct')">% ↕</th>
-                    <th class="hm" onclick="ss('volume')">Hacim ↕</th>
-                    <th class="hm">Yüksek</th>
-                    <th class="hm">Düşük</th>
-                    <th class="hm">Grafik</th>
-                    <th>İşlem</th>
-                </tr></thead>
-                <tbody id="tb"></tbody>
-            </table>
-        </div>
-        <div class="empty" id="we" style="display:none"><div class="icon">📭</div><h3>Liste boş</h3><p>Hisse ekleyin</p></div>
+        <div class="tw"><table><thead><tr>
+            <th onclick="sS('symbol')">Hisse ↕</th>
+            <th onclick="sS('price')">Fiyat ↕</th>
+            <th onclick="sS('change')">Değişim ↕</th>
+            <th onclick="sS('changePct')">% ↕</th>
+            <th class="hm" onclick="sS('volume')">Hacim ↕</th>
+            <th class="hm">Yüksek</th><th class="hm">Düşük</th>
+            <th class="hm">Grafik</th><th>İşlem</th>
+        </tr></thead><tbody id="tb"></tbody></table></div>
+        <div class="emp" id="wE" style="display:none"><div class="ic">📭</div><h3>Boş</h3></div>
     </div>
 
-    <!-- PORTFOLIO -->
-    <div id="tPort" style="display:none">
-        <div class="ctrl"><button class="btn btn-p" onclick="omod('prtMod')">➕ İşlem Ekle</button></div>
-        <div class="tw">
-            <table>
-                <thead><tr><th>Hisse</th><th>Lot</th><th>Maliyet</th><th>Güncel</th><th>Değer</th><th>K/Z</th><th>%</th><th>İşlem</th></tr></thead>
-                <tbody id="pb"></tbody>
-            </table>
-        </div>
-        <div class="empty" id="pe" style="display:none"><div class="icon">💼</div><h3>Portföy boş</h3></div>
+    <div id="tP" style="display:none">
+        <div class="ctrl"><button class="btn bp" onclick="oM('pM')">➕ İşlem</button></div>
+        <div class="tw"><table><thead><tr><th>Hisse</th><th>Lot</th><th>Maliyet</th><th>Güncel</th><th>Değer</th><th>K/Z</th><th>%</th><th>İşlem</th></tr></thead><tbody id="pB"></tbody></table></div>
+        <div class="emp" id="pE" style="display:none"><div class="ic">💼</div><h3>Portföy boş</h3></div>
     </div>
 
-    <!-- ALERTS -->
-    <div id="tAlert" style="display:none">
-        <div class="ctrl"><button class="btn btn-p" onclick="omod('alrMod')">🔔 Alarm Ekle</button></div>
-        <div id="al"></div>
-        <div class="empty" id="ae" style="display:none"><div class="icon">🔔</div><h3>Alarm yok</h3></div>
+    <div id="tA" style="display:none">
+        <div class="ctrl"><button class="btn bp" onclick="oM('lM')">🔔 Alarm</button></div>
+        <div id="aL"></div>
+        <div class="emp" id="aE" style="display:none"><div class="ic">🔔</div><h3>Alarm yok</h3></div>
     </div>
 
-    <!-- CLOUD -->
-    <div id="tCloud" style="display:none">
-        <div style="background:var(--card);border:1px solid var(--brd);border-radius:10px;padding:20px">
-            <h3 style="font-size:15px;margin-bottom:14px">☁️ Bulut Senkronizasyon Ayarları</h3>
-            <div class="fd">
-                <label>JSONBin API Key</label>
-                <input type="text" id="cfgKey" placeholder="$2a$10$...">
+    <div id="tC" style="display:none">
+        <div style="background:var(--card);border:1px solid var(--brd);border-radius:9px;padding:16px">
+            <h3 style="font-size:14px;margin-bottom:12px">☁️ Bulut Ayarları</h3>
+            <div class="fd"><label>API Key</label><input type="text" id="cK" placeholder="$2a$10$..."></div>
+            <div class="fd"><label>Bin ID</label><input type="text" id="cB" placeholder="Otomatik"></div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin:10px 0">
+                <button class="btn bp" onclick="saveCfg2()">💾 Kaydet</button>
+                <button class="btn bs" onclick="toCloud()">⬆️ Yükle</button>
+                <button class="btn bw" onclick="fromCloud()">⬇️ İndir</button>
+                <button class="btn bo" onclick="expJ()">📤 JSON</button>
+                <div style="position:relative"><button class="btn bo">📥 Yükle</button><input type="file" accept=".json" onchange="impJ(event)" style="position:absolute;inset:0;opacity:0;cursor:pointer"></div>
+                <button class="btn bd" onclick="clrAll()">🗑️ Sil</button>
             </div>
-            <div class="fd">
-                <label>Bin ID</label>
-                <input type="text" id="cfgBin" placeholder="Otomatik oluşturulur">
-            </div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;margin:14px 0">
-                <button class="btn btn-p" onclick="saveCloudCfg()">💾 Ayarları Kaydet</button>
-                <button class="btn btn-s" onclick="syncToCloud()">⬆️ Buluta Yükle</button>
-                <button class="btn btn-w" onclick="syncFromCloud()">⬇️ Buluttan İndir</button>
-                <button class="btn btn-o" onclick="exportJSON()">📤 JSON İndir</button>
-                <div style="position:relative"><button class="btn btn-o">📥 JSON Yükle</button><input type="file" accept=".json" onchange="importJSON(event)" style="position:absolute;inset:0;opacity:0;cursor:pointer"></div>
-                <button class="btn btn-d" onclick="clearAll()">🗑️ Sil</button>
-            </div>
-            <div id="cloudInfo" style="font-size:12px;color:var(--tx2);padding:12px;background:var(--bg2);border-radius:6px;margin-top:10px"></div>
+            <div id="cInfo" style="font-size:11px;color:var(--tx2);padding:10px;background:var(--bg2);border-radius:5px;margin-top:8px"></div>
         </div>
     </div>
 
-    <!-- DETAIL -->
     <div class="dp" id="dp">
-        <div class="dp-top">
-            <h2 id="dt">Detay</h2>
-            <button class="btn btn-o btn-sm" onclick="cdp()">✕</button>
-        </div>
-        <div class="dp-body">
-            <div class="dg" id="dgr"></div>
-            <div class="ca"><canvas id="bc" class="cc"></canvas></div>
-        </div>
+        <div class="dpt"><h2 id="dT">Detay</h2><button class="btn bo bsm" onclick="cDP()">✕</button></div>
+        <div class="dpb"><div class="dg" id="dG"></div><div class="ca"><canvas id="bC2" class="cc"></canvas></div></div>
     </div>
 </div>
 
-<!-- MODALS -->
-<div class="mo" id="addMod">
-    <div class="mb">
-        <h2>➕ Hisse Ekle</h2>
-        <div class="fd">
-            <label>BIST100 Hisseleri</label>
-            <select id="addSel"><option value="">Seçin...</option></select>
-        </div>
-        <div class="fd">
-            <label>Birden Fazla Ekle (virgülle)</label>
-            <input type="text" id="addMulti" placeholder="THYAO,ASELS,GARAN" style="text-transform:uppercase">
-        </div>
-        <div style="margin:8px 0">
-            <button class="btn btn-o btn-sm" onclick="addPreset('banka')">🏦 Bankalar</button>
-            <button class="btn btn-o btn-sm" onclick="addPreset('holding')">🏢 Holdingler</button>
-            <button class="btn btn-o btn-sm" onclick="addPreset('havacilik')">✈️ Havacılık</button>
-            <button class="btn btn-o btn-sm" onclick="addPreset('top10')">🔥 Top 10</button>
-            <button class="btn btn-o btn-sm" onclick="addPreset('all')">📋 Tüm BIST100</button>
-        </div>
-        <div class="ma">
-            <button class="btn btn-p" onclick="addS()">Ekle</button>
-            <button class="btn btn-o" onclick="cmod('addMod')">İptal</button>
-        </div>
+<div class="mo" id="aM"><div class="mb">
+    <h2>➕ Hisse Ekle</h2>
+    <div class="fd"><label>BIST100</label><select id="aS"><option value="">Seçin...</option></select></div>
+    <div class="fd"><label>Çoklu (virgülle)</label><input type="text" id="aMu" placeholder="THYAO,ASELS,GARAN" style="text-transform:uppercase"></div>
+    <div style="margin:6px 0;display:flex;flex-wrap:wrap;gap:4px">
+        <button class="btn bo bsm" onclick="addPre('banka')">🏦 Bankalar</button>
+        <button class="btn bo bsm" onclick="addPre('holding')">🏢 Holding</button>
+        <button class="btn bo bsm" onclick="addPre('hava')">✈️ Havacılık</button>
+        <button class="btn bo bsm" onclick="addPre('top10')">🔥 Top10</button>
+        <button class="btn bo bsm" onclick="addPre('all')">📋 Tüm BIST100</button>
     </div>
-</div>
+    <div class="ma"><button class="btn bp" onclick="addStk()">Ekle</button><button class="btn bo" onclick="cM('aM')">İptal</button></div>
+</div></div>
 
-<div class="mo" id="prtMod">
-    <div class="mb">
-        <h2>💼 İşlem Ekle</h2>
-        <div class="fd"><label>Hisse</label><select id="pSel"><option value="">Seçin...</option></select></div>
-        <div class="fr2">
-            <div class="fd"><label>Lot</label><input type="number" id="pLot" placeholder="0"></div>
-            <div class="fd"><label>Alış ₺</label><input type="number" id="pPr" step=".01" placeholder="0.00"></div>
-        </div>
-        <div class="fd"><label>Tarih</label><input type="date" id="pDt"></div>
-        <div class="ma">
-            <button class="btn btn-s" onclick="addP()">Ekle</button>
-            <button class="btn btn-o" onclick="cmod('prtMod')">İptal</button>
-        </div>
-    </div>
-</div>
+<div class="mo" id="pM"><div class="mb">
+    <h2>💼 İşlem</h2>
+    <div class="fd"><label>Hisse</label><select id="pSe"><option value="">Seçin...</option></select></div>
+    <div class="fr"><div class="fd"><label>Lot</label><input type="number" id="pL" placeholder="0"></div><div class="fd"><label>Alış ₺</label><input type="number" id="pPr" step=".01" placeholder="0.00"></div></div>
+    <div class="fd"><label>Tarih</label><input type="date" id="pD"></div>
+    <div class="ma"><button class="btn bs" onclick="addPrt()">Ekle</button><button class="btn bo" onclick="cM('pM')">İptal</button></div>
+</div></div>
 
-<div class="mo" id="alrMod">
-    <div class="mb">
-        <h2>🔔 Alarm</h2>
-        <div class="fd"><label>Hisse</label><select id="aSel"><option value="">Seçin...</option></select></div>
-        <div class="fr2">
-            <div class="fd"><label>Koşul</label><select id="aCnd"><option value="above">Üstüne Çıkarsa</option><option value="below">Altına Düşerse</option></select></div>
-            <div class="fd"><label>Fiyat ₺</label><input type="number" id="aPr" step=".01" placeholder="0.00"></div>
-        </div>
-        <div class="ma">
-            <button class="btn btn-p" onclick="addA()">Kur</button>
-            <button class="btn btn-o" onclick="cmod('alrMod')">İptal</button>
-        </div>
-    </div>
-</div>
+<div class="mo" id="lM"><div class="mb">
+    <h2>🔔 Alarm</h2>
+    <div class="fd"><label>Hisse</label><select id="lSe"><option value="">Seçin...</option></select></div>
+    <div class="fr"><div class="fd"><label>Koşul</label><select id="lCn"><option value="above">Üstüne</option><option value="below">Altına</option></select></div><div class="fd"><label>Fiyat ₺</label><input type="number" id="lPr" step=".01" placeholder="0.00"></div></div>
+    <div class="ma"><button class="btn bp" onclick="addAlr()">Kur</button><button class="btn bo" onclick="cM('lM')">İptal</button></div>
+</div></div>
 
 <div class="si" id="sInd"><span class="dot on"></span>Kaydedildi</div>
-<div class="tbox" id="tbox"></div>
+<div class="tbx" id="tbx"></div>
 
 <script>
-// ================================================
-//  BIST 100 TAM LİSTE
-// ================================================
-const BIST100 = {
-    'AEFES':{n:'Anadolu Efes',s:'İçecek'},
-    'AFYON':{n:'Afyon Çimento',s:'Çimento'},
-    'AGESA':{n:'AgeSA Hayat Emeklilik',s:'Sigorta'},
-    'AGHOL':{n:'AG Anadolu Grubu Holding',s:'Holding'},
-    'AHGAZ':{n:'Ahlatçı Doğalgaz',s:'Enerji'},
-    'AKBNK':{n:'Akbank',s:'Bankacılık'},
-    'AKCNS':{n:'Akçansa Çimento',s:'Çimento'},
-    'AKFGY':{n:'Akfen GYO',s:'GYO'},
-    'AKSA':{n:'Aksa Akrilik',s:'Kimya'},
-    'AKSEN':{n:'Aksa Enerji',s:'Enerji'},
-    'ALARK':{n:'Alarko Holding',s:'Holding'},
-    'ALFAS':{n:'Alfa Solar Enerji',s:'Enerji'},
-    'ARCLK':{n:'Arçelik',s:'Beyaz Eşya'},
-    'ARDYZ':{n:'Anadolu Isuzu',s:'Otomotiv'},
-    'ASELS':{n:'Aselsan',s:'Savunma'},
-    'ASUZU':{n:'Anadolu Isuzu',s:'Otomotiv'},
-    'BERA':{n:'Bera Holding',s:'Holding'},
-    'BIMAS':{n:'BİM Mağazaları',s:'Perakende'},
-    'BIOEN':{n:'Biotrend Enerji',s:'Enerji'},
-    'BRYAT':{n:'Borusan Yatırım',s:'Holding'},
-    'BTCIM':{n:'Batıçim',s:'Çimento'},
-    'BUCIM':{n:'Bursa Çimento',s:'Çimento'},
-    'CCOLA':{n:'Coca-Cola İçecek',s:'İçecek'},
-    'CIMSA':{n:'Çimsa',s:'Çimento'},
-    'CWENE':{n:'CW Enerji',s:'Enerji'},
-    'DOHOL':{n:'Doğan Holding',s:'Holding'},
-    'ECILC':{n:'Eczacıbaşı İlaç',s:'İlaç'},
-    'EGEEN':{n:'Ege Endüstri',s:'Otomotiv'},
-    'EKGYO':{n:'Emlak Konut GYO',s:'GYO'},
-    'ENKAI':{n:'Enka İnşaat',s:'İnşaat'},
-    'ENJSA':{n:'Enerjisa Enerji',s:'Enerji'},
-    'EREGL':{n:'Ereğli Demir Çelik',s:'Demir Çelik'},
-    'EUPWR':{n:'Europower Enerji',s:'Enerji'},
-    'FROTO':{n:'Ford Otosan',s:'Otomotiv'},
-    'GARAN':{n:'Garanti BBVA',s:'Bankacılık'},
-    'GESAN':{n:'Giresun San.',s:'Sanayi'},
-    'GUBRF':{n:'Gübre Fabrikaları',s:'Kimya'},
-    'HALKB':{n:'Halkbank',s:'Bankacılık'},
-    'HEKTS':{n:'Hektaş',s:'Kimya'},
-    'ISCTR':{n:'İş Bankası C',s:'Bankacılık'},
-    'ISGYO':{n:'İş GYO',s:'GYO'},
-    'ISMEN':{n:'İş Yatırım Menkul',s:'Aracı Kurum'},
-    'KARSN':{n:'Karsan Otomotiv',s:'Otomotiv'},
-    'KAYSE':{n:'Kayseri Şeker',s:'Gıda'},
-    'KCHOL':{n:'Koç Holding',s:'Holding'},
-    'KLSER':{n:'Kaleseramik',s:'Seramik'},
-    'KONTR':{n:'Kontrolmatik',s:'Teknoloji'},
-    'KONYA':{n:'Konya Çimento',s:'Çimento'},
-    'KOZAA':{n:'Koza Anadolu Metal',s:'Madencilik'},
-    'KOZAL':{n:'Koza Altın',s:'Madencilik'},
-    'KRDMD':{n:'Kardemir D',s:'Demir Çelik'},
-    'KZBGY':{n:'Kızılbük GYO',s:'GYO'},
-    'MAVI':{n:'Mavi Giyim',s:'Tekstil'},
-    'MGROS':{n:'Migros',s:'Perakende'},
-    'MPARK':{n:'MLP Sağlık',s:'Sağlık'},
-    'ODAS':{n:'Odaş Elektrik',s:'Enerji'},
-    'OTKAR':{n:'Otokar',s:'Otomotiv'},
-    'OYAKC':{n:'Oyak Çimento',s:'Çimento'},
-    'PETKM':{n:'Petkim',s:'Kimya'},
-    'PGSUS':{n:'Pegasus',s:'Havacılık'},
-    'QUAGR':{n:'QUA Granite',s:'Seramik'},
-    'SAHOL':{n:'Sabancı Holding',s:'Holding'},
-    'SASA':{n:'SASA Polyester',s:'Kimya'},
-    'SELEC':{n:'Selçuk Ecza Deposu',s:'İlaç'},
-    'SISE':{n:'Şişecam',s:'Cam'},
-    'SKBNK':{n:'Şekerbank',s:'Bankacılık'},
-    'SOKM':{n:'ŞOK Marketler',s:'Perakende'},
-    'TAVHL':{n:'TAV Havalimanları',s:'Havacılık'},
-    'TCELL':{n:'Turkcell',s:'Teknoloji'},
-    'THYAO':{n:'Türk Hava Yolları',s:'Havacılık'},
-    'TKFEN':{n:'Tekfen Holding',s:'Holding'},
-    'TKNSA':{n:'Teknosa',s:'Perakende'},
-    'TMSN':{n:'Tümosan',s:'Otomotiv'},
-    'TOASO':{n:'Tofaş Otomobil',s:'Otomotiv'},
-    'TRGYO':{n:'Torunlar GYO',s:'GYO'},
-    'TTKOM':{n:'Türk Telekom',s:'Teknoloji'},
-    'TTRAK':{n:'Türk Traktör',s:'Otomotiv'},
-    'TUKAS':{n:'Tukaş Gıda',s:'Gıda'},
-    'TUPRS':{n:'Tüpraş',s:'Enerji'},
-    'ULKER':{n:'Ülker Bisküvi',s:'Gıda'},
-    'VAKBN':{n:'Vakıfbank',s:'Bankacılık'},
-    'VESTL':{n:'Vestel',s:'Beyaz Eşya'},
-    'VESBE':{n:'Vestel Beyaz Eşya',s:'Beyaz Eşya'},
-    'YKBNK':{n:'Yapı Kredi',s:'Bankacılık'},
-    'YATAS':{n:'Yataş',s:'Mobilya'},
-    'YEOTK':{n:'Yeo Teknoloji',s:'Teknoloji'},
-    'ZOREN':{n:'Zorlu Enerji',s:'Enerji'},
-    'AYGAZ':{n:'Aygaz',s:'Enerji'},
-    'DOAS':{n:'Doğuş Otomotiv',s:'Otomotiv'},
-    'TSKB':{n:'TSKB',s:'Bankacılık'},
-    'PENTA':{n:'Penta Teknoloji',s:'Teknoloji'},
-    'PAPIL':{n:'Papilon Savunma',s:'Savunma'},
-    'GENIL':{n:'Gen İlaç',s:'İlaç'},
-    'CANTE':{n:'Çan2 Termik',s:'Enerji'},
-    'KCAER':{n:'Kocaer Çelik',s:'Demir Çelik'},
-    'TABGD':{n:'Tab Gıda',s:'Gıda'},
-    'SMRTG':{n:'Smartiks Yazılım',s:'Teknoloji'},
-    'KLRHO':{n:'Kiler Holding',s:'Holding'},
-    'MIATK':{n:'Mia Teknoloji',s:'Teknoloji'},
-    'FORTE':{n:'Forte Bilgi İletişim',s:'Teknoloji'},
-    'TURSG':{n:'Türkiye Sigorta',s:'Sigorta'}
+// ============ BIST100 ============
+const B100={
+'AEFES':{n:'Anadolu Efes',s:'İçecek'},'AGESA':{n:'AgeSA',s:'Sigorta'},'AGHOL':{n:'AG Holding',s:'Holding'},
+'AKBNK':{n:'Akbank',s:'Bankacılık'},'AKCNS':{n:'Akçansa',s:'Çimento'},'AKFGY':{n:'Akfen GYO',s:'GYO'},
+'AKSA':{n:'Aksa Akrilik',s:'Kimya'},'AKSEN':{n:'Aksa Enerji',s:'Enerji'},'ALARK':{n:'Alarko Holding',s:'Holding'},
+'ALFAS':{n:'Alfa Solar',s:'Enerji'},'ARCLK':{n:'Arçelik',s:'Beyaz Eşya'},'ASELS':{n:'Aselsan',s:'Savunma'},
+'ASUZU':{n:'Anadolu Isuzu',s:'Otomotiv'},'AYGAZ':{n:'Aygaz',s:'Enerji'},'BERA':{n:'Bera Holding',s:'Holding'},
+'BIMAS':{n:'BİM',s:'Perakende'},'BIOEN':{n:'Biotrend',s:'Enerji'},'BRYAT':{n:'Borusan Yat.',s:'Holding'},
+'BUCIM':{n:'Bursa Çimento',s:'Çimento'},'CCOLA':{n:'Coca-Cola İçecek',s:'İçecek'},'CIMSA':{n:'Çimsa',s:'Çimento'},
+'CWENE':{n:'CW Enerji',s:'Enerji'},'DOAS':{n:'Doğuş Otomotiv',s:'Otomotiv'},'DOHOL':{n:'Doğan Holding',s:'Holding'},
+'ECILC':{n:'Eczacıbaşı İlaç',s:'İlaç'},'EGEEN':{n:'Ege Endüstri',s:'Otomotiv'},'EKGYO':{n:'Emlak Konut GYO',s:'GYO'},
+'ENKAI':{n:'Enka İnşaat',s:'İnşaat'},'ENJSA':{n:'Enerjisa',s:'Enerji'},'EREGL':{n:'Ereğli Demir Çelik',s:'Demir Çelik'},
+'EUPWR':{n:'Europower',s:'Enerji'},'FROTO':{n:'Ford Otosan',s:'Otomotiv'},'GARAN':{n:'Garanti BBVA',s:'Bankacılık'},
+'GESAN':{n:'Giresun San.',s:'Sanayi'},'GUBRF':{n:'Gübre Fab.',s:'Kimya'},'HALKB':{n:'Halkbank',s:'Bankacılık'},
+'HEKTS':{n:'Hektaş',s:'Kimya'},'ISCTR':{n:'İş Bankası C',s:'Bankacılık'},'ISGYO':{n:'İş GYO',s:'GYO'},
+'KARSN':{n:'Karsan',s:'Otomotiv'},'KAYSE':{n:'Kayseri Şeker',s:'Gıda'},'KCHOL':{n:'Koç Holding',s:'Holding'},
+'KLSER':{n:'Kaleseramik',s:'Seramik'},'KONTR':{n:'Kontrolmatik',s:'Teknoloji'},'KONYA':{n:'Konya Çimento',s:'Çimento'},
+'KOZAA':{n:'Koza Anadolu',s:'Madencilik'},'KOZAL':{n:'Koza Altın',s:'Madencilik'},'KRDMD':{n:'Kardemir D',s:'Demir Çelik'},
+'MAVI':{n:'Mavi Giyim',s:'Tekstil'},'MGROS':{n:'Migros',s:'Perakende'},'MPARK':{n:'MLP Sağlık',s:'Sağlık'},
+'ODAS':{n:'Odaş Elektrik',s:'Enerji'},'OTKAR':{n:'Otokar',s:'Otomotiv'},'OYAKC':{n:'Oyak Çimento',s:'Çimento'},
+'PETKM':{n:'Petkim',s:'Kimya'},'PGSUS':{n:'Pegasus',s:'Havacılık'},'SAHOL':{n:'Sabancı Holding',s:'Holding'},
+'SASA':{n:'SASA Polyester',s:'Kimya'},'SELEC':{n:'Selçuk Ecza',s:'İlaç'},'SISE':{n:'Şişecam',s:'Cam'},
+'SKBNK':{n:'Şekerbank',s:'Bankacılık'},'SOKM':{n:'ŞOK Market',s:'Perakende'},'TAVHL':{n:'TAV Havalimanları',s:'Havacılık'},
+'TCELL':{n:'Turkcell',s:'Teknoloji'},'THYAO':{n:'THY',s:'Havacılık'},'TKFEN':{n:'Tekfen Holding',s:'Holding'},
+'TKNSA':{n:'Teknosa',s:'Perakende'},'TMSN':{n:'Tümosan',s:'Otomotiv'},'TOASO':{n:'Tofaş',s:'Otomotiv'},
+'TRGYO':{n:'Torunlar GYO',s:'GYO'},'TSKB':{n:'TSKB',s:'Bankacılık'},'TTKOM':{n:'Türk Telekom',s:'Teknoloji'},
+'TTRAK':{n:'Türk Traktör',s:'Otomotiv'},'TUPRS':{n:'Tüpraş',s:'Enerji'},'TURSG':{n:'Türkiye Sigorta',s:'Sigorta'},
+'ULKER':{n:'Ülker',s:'Gıda'},'VAKBN':{n:'Vakıfbank',s:'Bankacılık'},'VESTL':{n:'Vestel',s:'Beyaz Eşya'},
+'VESBE':{n:'Vestel Beyaz Eşya',s:'Beyaz Eşya'},'YKBNK':{n:'Yapı Kredi',s:'Bankacılık'},
+'YATAS':{n:'Yataş',s:'Mobilya'},'YEOTK':{n:'Yeo Teknoloji',s:'Teknoloji'},'ZOREN':{n:'Zorlu Enerji',s:'Enerji'},
+'PENTA':{n:'Penta Teknoloji',s:'Teknoloji'},'PAPIL':{n:'Papilon',s:'Savunma'},'FORTE':{n:'Forte Bilgi',s:'Teknoloji'},
+'SMRTG':{n:'Smartiks',s:'Teknoloji'},'TABGD':{n:'Tab Gıda',s:'Gıda'},'CANTE':{n:'Çan2 Termik',s:'Enerji'},
+'KCAER':{n:'Kocaer Çelik',s:'Demir Çelik'},'MIATK':{n:'Mia Teknoloji',s:'Teknoloji'},
+'QUAGR':{n:'QUA Granite',s:'Seramik'},'GENIL':{n:'Gen İlaç',s:'İlaç'},'KLRHO':{n:'Kiler Holding',s:'Holding'},
+'AHGAZ':{n:'Ahlatçı Doğalgaz',s:'Enerji'},'BTCIM':{n:'Batıçim',s:'Çimento'},'ISMEN':{n:'İş Yatırım',s:'Aracı Kurum'},
+'AFYON':{n:'Afyon Çimento',s:'Çimento'},'ARDYZ':{n:'Ard Grup',s:'Teknoloji'}
 };
 
-const PRESETS = {
-    banka: ['AKBNK','GARAN','HALKB','ISCTR','VAKBN','YKBNK','SKBNK','TSKB'],
-    holding: ['KCHOL','SAHOL','DOHOL','AGHOL','ALARK','TKFEN','BERA'],
-    havacilik: ['THYAO','PGSUS','TAVHL'],
-    top10: ['THYAO','ASELS','GARAN','BIMAS','KCHOL','TUPRS','AKBNK','TCELL','EREGL','FROTO']
+const PRESETS={
+    banka:['AKBNK','GARAN','HALKB','ISCTR','VAKBN','YKBNK','SKBNK','TSKB'],
+    holding:['KCHOL','SAHOL','DOHOL','AGHOL','ALARK','TKFEN','BERA'],
+    hava:['THYAO','PGSUS','TAVHL'],
+    top10:['THYAO','ASELS','GARAN','BIMAS','KCHOL','TUPRS','AKBNK','TCELL','EREGL','FROTO']
 };
+const CL=['#3b82f6','#ef4444','#10b981','#f59e0b','#8b5cf6','#ec4899','#14b8a6','#f97316','#6366f1','#84cc16'];
 
-const CL = ['#3b82f6','#ef4444','#10b981','#f59e0b','#8b5cf6','#ec4899','#14b8a6','#f97316','#6366f1','#84cc16'];
+// ============ STATE ============
+let D={stocks:[],portfolio:[],alerts:[],favorites:[],hist:{}};
+let cloud={key:'',bin:''};
+let flt='all',srt={k:'symbol',a:true};
 
-// ================================================
-//  STATE
-// ================================================
-let S = { stocks:[], portfolio:[], alerts:[], favorites:[], hist:{} };
-let cloud = { apiKey:'', binId:'' };
-let flt='all', srt={k:'symbol',a:true};
-
-// ================================================
-//  INIT
-// ================================================
+// ============ INIT ============
 async function init(){
-    loadLocal();
-    loadCloudConfig();
-
-    if(!cloud.apiKey){
-        document.getElementById('setupBox').style.display='block';
-    }
-
-    if(S.stocks.length===0){
-        addPreset('top10');
-    }
-
+    loadLocal();loadCC();
+    if(!cloud.key) document.getElementById('stpBox').style.display='block';
+    if(D.stocks.length===0) addPre('top10');
     fillSel();
-    setInterval(updateClock,1000);
-    updateClock();
-    rndr();
-
-    // Try cloud sync
-    if(cloud.apiKey && cloud.binId){
-        await syncFromCloud();
-    }
-
-    // Fetch real prices
-    await fetchPrices();
-
-    hideLoader();
-
-    // Auto refresh every 60 seconds
-    setInterval(fetchPrices, 60000);
-    // Auto cloud sync every 2 minutes
-    setInterval(()=>{ if(cloud.apiKey && cloud.binId) syncToCloud(); }, 120000);
+    setInterval(()=>{document.getElementById('clk').textContent='⏰ '+new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit',second:'2-digit'})},1000);
+    R();
+    if(cloud.key&&cloud.bin) await fromCloud();
+    await fetchAll();
+    hl();
+    setInterval(fetchAll,60000);
+    setInterval(()=>{if(cloud.key&&cloud.bin)toCloud()},180000);
+    setInterval(chkAlr,10000);
 }
 
-function hideLoader(){ document.getElementById('loader').classList.add('hidden'); }
-function showLoader(t){ 
-    document.getElementById('loaderText').textContent=t||'Yükleniyor...';
-    document.getElementById('loader').classList.remove('hidden');
-}
+function hl(){document.getElementById('ld').classList.add('hd')}
+function sl(t,p){document.getElementById('lt').textContent=t;document.getElementById('pf').style.width=p+'%'}
 
-// ================================================
-//  REAL PRICE FETCHING
-// ================================================
-async function fetchPrices(){
-    if(S.stocks.length===0) return;
+// ============ PRICE FETCH - MULTI PROXY ============
+const PROXIES=[
+    url=>`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+    url=>`https://corsproxy.io/?${encodeURIComponent(url)}`,
+    url=>`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+    url=>`https://thingproxy.freeboard.io/fetch/${url}`
+];
 
-    document.getElementById('priceSt').textContent='📡 Fiyat: Çekiliyor...';
-
-    const symbols = S.stocks.map(s => s.symbol+'.IS');
-    const batchSize = 10;
-    let updated = 0;
-
-    for(let i=0; i<symbols.length; i+=batchSize){
-        const batch = symbols.slice(i, i+batchSize);
-        const query = batch.join(',');
-
+async function tryFetch(url, timeout=12000){
+    for(let i=0;i<PROXIES.length;i++){
         try{
-            // Using allorigins.win as CORS proxy for Yahoo Finance
-            const url = `https://api.allorigins.win/raw?url=${encodeURIComponent(
-                `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${query}&fields=regularMarketPrice,regularMarketChange,regularMarketChangePercent,regularMarketVolume,regularMarketDayHigh,regularMarketDayLow,regularMarketOpen,regularMarketPreviousClose`
-            )}`;
+            const pUrl=PROXIES[i](url);
+            const ctrl=new AbortController();
+            const timer=setTimeout(()=>ctrl.abort(),timeout);
+            const resp=await fetch(pUrl,{signal:ctrl.signal});
+            clearTimeout(timer);
+            if(!resp.ok) continue;
+            const text=await resp.text();
+            try{return JSON.parse(text)}catch(e){continue}
+        }catch(e){continue}
+    }
+    return null;
+}
 
-            const resp = await fetch(url, {signal: AbortSignal.timeout(10000)});
-            const data = await resp.json();
+async function fetchAll(){
+    if(D.stocks.length===0) return;
+    sl('Fiyatlar çekiliyor...',10);
+    document.getElementById('pSt').textContent='📡 Çekiliyor...';
+    
+    let updated=0;
+    let source='';
 
-            if(data.quoteResponse && data.quoteResponse.result){
-                data.quoteResponse.result.forEach(q => {
-                    const sym = q.symbol.replace('.IS','');
-                    const stock = S.stocks.find(s => s.symbol === sym);
-                    if(stock && q.regularMarketPrice){
-                        stock.prevPrice = stock.price;
-                        stock.price = +q.regularMarketPrice.toFixed(2);
-                        stock.change = +(q.regularMarketChange||0).toFixed(2);
-                        stock.changePct = +(q.regularMarketChangePercent||0).toFixed(2);
-                        stock.volume = q.regularMarketVolume || stock.volume;
-                        stock.high = q.regularMarketDayHigh || stock.high;
-                        stock.low = q.regularMarketDayLow || stock.low;
-                        stock.open = q.regularMarketOpen || stock.open;
-                        stock.prevClose = q.regularMarketPreviousClose || stock.open;
-
-                        if(!S.hist[sym]) S.hist[sym] = [];
-                        S.hist[sym].push(stock.price);
-                        if(S.hist[sym].length > 50) S.hist[sym].shift();
-
-                        updated++;
-                    }
-                });
-            }
-        } catch(e){
-            console.log('Batch fetch error:', e.message);
+    // Method 1: Yahoo Finance v7 batch
+    updated = await fetchYahooBatch();
+    if(updated>0){source='Yahoo Finance';} 
+    else {
+        // Method 2: Yahoo Finance v8 individual
+        sl('Alternatif kaynak deneniyor...',30);
+        updated = await fetchYahooIndividual();
+        if(updated>0) source='Yahoo v8';
+        else {
+            // Method 3: Scrape approach
+            sl('Scrape deneniyor...',50);
+            updated = await fetchYahooScrape();
+            if(updated>0) source='Yahoo Scrape';
         }
-
-        // Small delay between batches
-        if(i + batchSize < symbols.length) await new Promise(r=>setTimeout(r,500));
-    }
-
-    if(updated > 0){
-        document.getElementById('priceSt').textContent=`📡 ${updated} hisse güncellendi`;
-        toast(`${updated} hisse fiyatı güncellendi`,'success');
-    } else {
-        document.getElementById('priceSt').textContent='📡 Proxy ile deneniyor...';
-        // Fallback: Try alternative proxy
-        await fetchPricesFallback();
-    }
-
-    saveLocal();
-    rndr();
-}
-
-async function fetchPricesFallback(){
-    let updated = 0;
-
-    for(const stock of S.stocks){
-        try{
-            const url = `https://api.allorigins.win/raw?url=${encodeURIComponent(
-                `https://query2.finance.yahoo.com/v10/finance/quoteSummary/${stock.symbol}.IS?modules=price`
-            )}`;
-
-            const resp = await fetch(url, {signal: AbortSignal.timeout(8000)});
-            const data = await resp.json();
-
-            const p = data?.quoteSummary?.result?.[0]?.price;
-            if(p && p.regularMarketPrice){
-                stock.prevPrice = stock.price;
-                stock.price = +(p.regularMarketPrice.raw||0).toFixed(2);
-                stock.change = +(p.regularMarketChange?.raw||0).toFixed(2);
-                stock.changePct = +(p.regularMarketChangePercent?.raw*100||0).toFixed(2);
-                stock.volume = p.regularMarketVolume?.raw || stock.volume;
-                stock.high = p.regularMarketDayHigh?.raw || stock.high;
-                stock.low = p.regularMarketDayLow?.raw || stock.low;
-                stock.open = p.regularMarketOpen?.raw || stock.open;
-
-                if(!S.hist[stock.symbol]) S.hist[stock.symbol]=[];
-                S.hist[stock.symbol].push(stock.price);
-                if(S.hist[stock.symbol].length>50) S.hist[stock.symbol].shift();
-
-                updated++;
-            }
-        } catch(e) { /* skip */ }
-
-        await new Promise(r=>setTimeout(r,300));
     }
 
     if(updated>0){
-        document.getElementById('priceSt').textContent=`📡 ${updated} hisse güncellendi`;
-        toast(`${updated} hisse fiyatı güncellendi (fallback)`,'success');
+        document.getElementById('pSt').textContent=`📡 ${updated} güncellendi`;
+        document.getElementById('apiSrc').textContent=source;
+        toast(`${updated} hisse güncellendi (${source})`,'success');
+        saveLocal();
     } else {
-        document.getElementById('priceSt').textContent='📡 API erişilemedi - Simülasyon';
-        simulatePrices();
+        document.getElementById('pSt').textContent='📡 Hata - yeniden dene';
+        document.getElementById('apiSrc').textContent='Bağlantı yok';
+        toast('Fiyat çekilemedi. Lütfen tekrar deneyin.','error');
     }
+    sl('Tamamlandı',100);
+    R();
 }
 
-function simulatePrices(){
-    S.stocks.forEach(s => {
-        if(s.price > 0){
-            const ch = (Math.random()-.48)*s.price*.006;
-            s.prevPrice = s.price;
-            s.price = +(s.price+ch).toFixed(2);
-            s.change = +(s.price-s.open).toFixed(2);
-            s.changePct = +((s.change/s.open)*100).toFixed(2);
-            s.high = Math.max(s.high,s.price);
-            s.low = Math.min(s.low,s.price);
-            s.volume += Math.floor(Math.random()*50000);
-            if(!S.hist[s.symbol]) S.hist[s.symbol]=[];
-            S.hist[s.symbol].push(s.price);
-            if(S.hist[s.symbol].length>50) S.hist[s.symbol].shift();
+async function fetchYahooBatch(){
+    let updated=0;
+    const syms=D.stocks.map(s=>s.symbol+'.IS');
+    
+    for(let i=0;i<syms.length;i+=8){
+        const batch=syms.slice(i,i+8).join(',');
+        const url=`https://query1.finance.yahoo.com/v7/finance/quote?symbols=${batch}`;
+        
+        const data=await tryFetch(url);
+        if(data?.quoteResponse?.result){
+            data.quoteResponse.result.forEach(q=>{
+                const sym=q.symbol.replace('.IS','');
+                const stk=D.stocks.find(s=>s.symbol===sym);
+                if(stk&&q.regularMarketPrice){
+                    updateStockData(stk,q);
+                    updated++;
+                }
+            });
         }
-    });
-    toast('API erişilemedi, simülasyon modu aktif','warning');
-}
-
-// ================================================
-//  CLOUD SYNC (JSONBin.io)
-// ================================================
-function loadCloudConfig(){
-    try{
-        const c = localStorage.getItem('ht_cloud');
-        if(c){ cloud = JSON.parse(c); }
-        document.getElementById('cfgKey').value = cloud.apiKey||'';
-        document.getElementById('cfgBin').value = cloud.binId||'';
-    }catch(e){}
-}
-
-function saveCloudConfig(){
-    cloud.apiKey = document.getElementById('apiKeyInput').value.trim();
-    cloud.binId = document.getElementById('binIdInput').value.trim();
-    localStorage.setItem('ht_cloud', JSON.stringify(cloud));
-    document.getElementById('setupBox').style.display='none';
-    document.getElementById('cfgKey').value = cloud.apiKey;
-    document.getElementById('cfgBin').value = cloud.binId;
-
-    if(cloud.apiKey){
-        if(!cloud.binId){
-            createBin();
-        } else {
-            syncToCloud();
-        }
+        if(i+8<syms.length) await delay(400);
+        sl('Fiyatlar çekiliyor...',10+((i/syms.length)*40));
     }
-    toast('Bulut ayarları kaydedildi','success');
+    return updated;
 }
 
-function saveCloudCfg(){
-    cloud.apiKey = document.getElementById('cfgKey').value.trim();
-    cloud.binId = document.getElementById('cfgBin').value.trim();
-    localStorage.setItem('ht_cloud', JSON.stringify(cloud));
-    toast('Ayarlar kaydedildi','success');
-    updateCloudUI();
+async function fetchYahooIndividual(){
+    let updated=0;
+    for(let i=0;i<D.stocks.length;i++){
+        const stk=D.stocks[i];
+        const url=`https://query2.finance.yahoo.com/v8/finance/chart/${stk.symbol}.IS?interval=1d&range=1d`;
+        
+        const data=await tryFetch(url,8000);
+        if(data?.chart?.result?.[0]){
+            const r=data.chart.result[0];
+            const meta=r.meta;
+            if(meta?.regularMarketPrice){
+                stk.prevPrice=stk.price;
+                stk.price=+meta.regularMarketPrice.toFixed(2);
+                stk.open=+(meta.previousClose||meta.chartPreviousClose||0).toFixed(2);
+                stk.change=+(stk.price-stk.open).toFixed(2);
+                stk.changePct=stk.open>0?+((stk.change/stk.open)*100).toFixed(2):0;
+                stk.high=+(meta.regularMarketDayHigh||stk.price).toFixed(2);
+                stk.low=+(meta.regularMarketDayLow||stk.price).toFixed(2);
+                stk.volume=meta.regularMarketVolume||0;
+                stk.prevClose=+(meta.previousClose||0).toFixed(2);
+                addHist(stk.symbol,stk.price);
+                updated++;
+            }
+        }
+        await delay(200);
+        sl('Alternatif kaynak...',30+((i/D.stocks.length)*40));
+    }
+    return updated;
 }
 
-function skipCloud(){
-    document.getElementById('setupBox').style.display='none';
-    toast('Bulut senkronizasyon atlandı. Veriler sadece bu cihazda saklanacak.','info');
+async function fetchYahooScrape(){
+    let updated=0;
+    for(let i=0;i<D.stocks.length;i++){
+        const stk=D.stocks[i];
+        const url=`https://query1.finance.yahoo.com/v10/finance/quoteSummary/${stk.symbol}.IS?modules=price`;
+        
+        const data=await tryFetch(url,8000);
+        if(data?.quoteSummary?.result?.[0]?.price){
+            const p=data.quoteSummary.result[0].price;
+            if(p.regularMarketPrice?.raw){
+                stk.prevPrice=stk.price;
+                stk.price=+p.regularMarketPrice.raw.toFixed(2);
+                stk.change=+(p.regularMarketChange?.raw||0).toFixed(2);
+                stk.changePct=+((p.regularMarketChangePercent?.raw||0)*100).toFixed(2);
+                stk.volume=p.regularMarketVolume?.raw||0;
+                stk.high=+(p.regularMarketDayHigh?.raw||stk.price).toFixed(2);
+                stk.low=+(p.regularMarketDayLow?.raw||stk.price).toFixed(2);
+                stk.open=+(p.regularMarketOpen?.raw||stk.price).toFixed(2);
+                stk.prevClose=+(p.regularMarketPreviousClose?.raw||stk.open).toFixed(2);
+                addHist(stk.symbol,stk.price);
+                updated++;
+            }
+        }
+        await delay(250);
+        sl('Scrape...',50+((i/D.stocks.length)*40));
+    }
+    return updated;
 }
 
+function updateStockData(stk,q){
+    stk.prevPrice=stk.price;
+    stk.price=+(q.regularMarketPrice||0).toFixed(2);
+    stk.change=+(q.regularMarketChange||0).toFixed(2);
+    stk.changePct=+(q.regularMarketChangePercent||0).toFixed(2);
+    stk.volume=q.regularMarketVolume||0;
+    stk.high=+(q.regularMarketDayHigh||stk.price).toFixed(2);
+    stk.low=+(q.regularMarketDayLow||stk.price).toFixed(2);
+    stk.open=+(q.regularMarketOpen||stk.price).toFixed(2);
+    stk.prevClose=+(q.regularMarketPreviousClose||stk.open).toFixed(2);
+    addHist(stk.symbol,stk.price);
+}
+
+function addHist(sym,p){
+    if(!D.hist[sym])D.hist[sym]=[];
+    D.hist[sym].push(p);
+    if(D.hist[sym].length>50)D.hist[sym].shift();
+}
+
+function delay(ms){return new Promise(r=>setTimeout(r,ms))}
+
+// ============ CLOUD ============
+function loadCC(){try{const c=localStorage.getItem('ht_cc');if(c){cloud=JSON.parse(c)}document.getElementById('cK').value=cloud.key||'';document.getElementById('cB').value=cloud.bin||''}catch(e){}}
+function saveCfg(){
+    cloud.key=document.getElementById('akI').value.trim();
+    cloud.bin=document.getElementById('biI').value.trim();
+    localStorage.setItem('ht_cc',JSON.stringify(cloud));
+    document.getElementById('stpBox').style.display='none';
+    document.getElementById('cK').value=cloud.key;
+    document.getElementById('cB').value=cloud.bin;
+    if(cloud.key&&!cloud.bin)createBin();
+    else if(cloud.key)toCloud();
+    toast('Bağlandı','success');
+}
+function saveCfg2(){
+    cloud.key=document.getElementById('cK').value.trim();
+    cloud.bin=document.getElementById('cB').value.trim();
+    localStorage.setItem('ht_cc',JSON.stringify(cloud));
+    toast('Kaydedildi','success');uCI();
+}
+function skipC(){document.getElementById('stpBox').style.display='none';toast('Atlandı','info')}
 async function createBin(){
     try{
-        setCloudSt('sync','Bin oluşturuluyor...');
-        const resp = await fetch('https://api.jsonbin.io/v3/b', {
-            method:'POST',
-            headers:{
-                'Content-Type':'application/json',
-                'X-Master-Key': cloud.apiKey,
-                'X-Bin-Name': 'HisseTakip'
-            },
-            body: JSON.stringify(S)
-        });
-        const data = await resp.json();
-        if(data.metadata && data.metadata.id){
-            cloud.binId = data.metadata.id;
-            localStorage.setItem('ht_cloud', JSON.stringify(cloud));
-            document.getElementById('cfgBin').value = cloud.binId;
-            setCloudSt('on','Bağlandı ✓');
-            toast(`Bin oluşturuldu: ${cloud.binId}`,'success');
-        } else {
-            throw new Error(data.message||'Bin oluşturulamadı');
-        }
-    }catch(e){
-        setCloudSt('off','Hata!');
-        toast('Bin oluşturma hatası: '+e.message,'error');
-    }
+        setCS('sy','Oluşturuluyor...');
+        const r=await fetch('https://api.jsonbin.io/v3/b',{method:'POST',headers:{'Content-Type':'application/json','X-Master-Key':cloud.key,'X-Bin-Name':'BIST100'},body:JSON.stringify(D)});
+        const d=await r.json();
+        if(d.metadata?.id){
+            cloud.bin=d.metadata.id;
+            localStorage.setItem('ht_cc',JSON.stringify(cloud));
+            document.getElementById('cB').value=cloud.bin;
+            setCS('on','Bağlandı ✓');
+            toast('Bin: '+cloud.bin,'success');
+        }else throw new Error(d.message||'Hata');
+    }catch(e){setCS('off','Hata');toast('Hata: '+e.message,'error')}
 }
-
-async function syncToCloud(){
-    if(!cloud.apiKey || !cloud.binId){
-        toast('Önce bulut ayarlarını yapın','warning');
-        return;
-    }
-
+async function toCloud(){
+    if(!cloud.key||!cloud.bin){toast('Önce ayarlayın','warning');return}
     try{
-        setCloudSt('sync','Yükleniyor...');
-        const resp = await fetch(`https://api.jsonbin.io/v3/b/${cloud.binId}`, {
-            method:'PUT',
-            headers:{
-                'Content-Type':'application/json',
-                'X-Master-Key': cloud.apiKey
-            },
-            body: JSON.stringify(S)
-        });
-        const data = await resp.json();
-        if(data.metadata){
-            setCloudSt('on','Senkronize ✓');
-            document.getElementById('lastSync').textContent = new Date().toLocaleString('tr-TR');
-            toast('Buluta yüklendi ☁️','success');
-        } else {
-            throw new Error(data.message||'Yükleme başarısız');
-        }
-    }catch(e){
-        setCloudSt('off','Hata!');
-        toast('Bulut yükleme hatası: '+e.message,'error');
-    }
-    updateCloudUI();
+        setCS('sy','Yükleniyor...');
+        const r=await fetch(`https://api.jsonbin.io/v3/b/${cloud.bin}`,{method:'PUT',headers:{'Content-Type':'application/json','X-Master-Key':cloud.key},body:JSON.stringify(D)});
+        const d=await r.json();
+        if(d.metadata){setCS('on','Senkron ✓');document.getElementById('lSyn').textContent=new Date().toLocaleString('tr-TR');toast('Yüklendi ☁️','success')}
+        else throw new Error(d.message||'');
+    }catch(e){setCS('off','Hata');toast('Hata: '+e.message,'error')}
+    uCI();
 }
-
-async function syncFromCloud(){
-    if(!cloud.apiKey || !cloud.binId){
-        toast('Önce bulut ayarlarını yapın','warning');
-        return;
-    }
-
+async function fromCloud(){
+    if(!cloud.key||!cloud.bin){toast('Ayarlayın','warning');return}
     try{
-        setCloudSt('sync','İndiriliyor...');
-        const resp = await fetch(`https://api.jsonbin.io/v3/b/${cloud.binId}/latest`, {
-            headers:{ 'X-Master-Key': cloud.apiKey }
-        });
-        const data = await resp.json();
-        if(data.record){
-            const r = data.record;
-            if(r.stocks && r.stocks.length > 0){
-                S.stocks = r.stocks;
-                S.portfolio = r.portfolio || [];
-                S.alerts = r.alerts || [];
-                S.favorites = r.favorites || [];
-                S.hist = r.hist || {};
-                saveLocal();
-                fillSel();
-                rndr();
-                setCloudSt('on','Senkronize ✓');
-                document.getElementById('lastSync').textContent = new Date().toLocaleString('tr-TR');
-                toast(`Buluttan ${S.stocks.length} hisse indirildi`,'success');
-            } else {
-                setCloudSt('on','Bulut boş');
-            }
-        } else {
-            throw new Error(data.message||'Veri alınamadı');
-        }
-    }catch(e){
-        setCloudSt('off','Hata!');
-        toast('Bulut indirme hatası: '+e.message,'error');
-    }
-    updateCloudUI();
+        setCS('sy','İndiriliyor...');
+        const r=await fetch(`https://api.jsonbin.io/v3/b/${cloud.bin}/latest`,{headers:{'X-Master-Key':cloud.key}});
+        const d=await r.json();
+        if(d.record?.stocks?.length>0){
+            D=d.record;saveLocal();fillSel();R();
+            setCS('on','Senkron ✓');
+            document.getElementById('lSyn').textContent=new Date().toLocaleString('tr-TR');
+            toast(`${D.stocks.length} hisse indirildi`,'success');
+        }else{setCS('on','Boş')}
+    }catch(e){setCS('off','Hata');toast('Hata: '+e.message,'error')}
+    uCI();
+}
+function setCS(s,t){document.getElementById('cDot').className='dot '+s;document.getElementById('cSt').textContent=t}
+function uCI(){
+    document.getElementById('cInfo').innerHTML=`
+        <strong>API Key:</strong> ${cloud.key?'✅ Ayarlı':'❌ Yok'}<br>
+        <strong>Bin ID:</strong> ${cloud.bin||'Yok'}<br>
+        <strong>Veri:</strong> ${D.stocks.length} hisse, ${D.portfolio.length} portföy, ${D.alerts.length} alarm<br>
+        <strong>Boyut:</strong> ${(new Blob([JSON.stringify(D)]).size/1024).toFixed(1)} KB`;
 }
 
-function setCloudSt(st, txt){
-    const dot = document.getElementById('cloudDot');
-    dot.className = 'dot ' + st;
-    document.getElementById('cloudSt').textContent = txt;
+// ============ LOCAL ============
+function saveLocal(){try{localStorage.setItem('ht_d',JSON.stringify(D))}catch(e){}
+    const i=document.getElementById('sInd');i.classList.add('vis');setTimeout(()=>i.classList.remove('vis'),1500)}
+function loadLocal(){try{const d=localStorage.getItem('ht_d');if(d){const p=JSON.parse(d);D.stocks=p.stocks||[];D.portfolio=p.portfolio||[];D.alerts=p.alerts||[];D.favorites=p.favorites||[];D.hist=p.hist||{}}}catch(e){}}
+
+// ============ STOCK OPS ============
+function mkS(sym){
+    const d=B100[sym];if(!d||D.stocks.find(s=>s.symbol===sym))return null;
+    if(!D.hist[sym]){D.hist[sym]=[];let p=100;for(let i=0;i<15;i++){p+=(Math.random()-.48)*2;D.hist[sym].push(+p.toFixed(2))}}
+    return{symbol:sym,name:d.n,sector:d.s,price:0,open:0,change:0,changePct:0,volume:0,high:0,low:0,prevPrice:0,prevClose:0,color:CL[Math.abs(hsh(sym))%CL.length]};
+}
+function hsh(s){let h=0;for(let i=0;i<s.length;i++)h=s.charCodeAt(i)+((h<<5)-h);return h}
+
+function addStk(){
+    const sel=document.getElementById('aS').value;
+    const mu=document.getElementById('aMu').value.toUpperCase().trim();
+    let n=0;
+    if(sel){const s=mkS(sel);if(s){D.stocks.push(s);n++}}
+    if(mu){mu.split(',').map(s=>s.trim()).filter(Boolean).forEach(sym=>{const s=mkS(sym);if(s){D.stocks.push(s);n++}})}
+    if(n>0){saveLocal();fillSel();R();cM('aM');toast(n+' eklendi','success');fetchAll();if(cloud.key&&cloud.bin)setTimeout(toCloud,3000)}
+    else toast('Eklenemedi','warning');
+    document.getElementById('aS').value='';document.getElementById('aMu').value='';
 }
 
-function updateCloudUI(){
-    const el = document.getElementById('cloudInfo');
-    el.innerHTML = `
-        <strong>Durum:</strong> ${cloud.apiKey?'✅ API Key ayarlı':'❌ API Key yok'}<br>
-        <strong>Bin ID:</strong> ${cloud.binId||'Yok'}<br>
-        <strong>Hisse:</strong> ${S.stocks.length} | <strong>Portföy:</strong> ${S.portfolio.length} | <strong>Alarm:</strong> ${S.alerts.length}<br>
-        <strong>LocalStorage:</strong> ${(new Blob([JSON.stringify(S)]).size/1024).toFixed(1)} KB
-    `;
+function addPre(k){
+    let list=k==='all'?Object.keys(B100):PRESETS[k]||[];
+    let n=0;list.forEach(sym=>{const s=mkS(sym);if(s){D.stocks.push(s);n++}});
+    if(n>0){saveLocal();fillSel();R();cM('aM');toast(n+' eklendi','success');fetchAll()}
 }
 
-// ================================================
-//  LOCAL STORAGE
-// ================================================
-function saveLocal(){
-    try{ localStorage.setItem('ht_data', JSON.stringify(S)); }catch(e){}
-    const ind=document.getElementById('sInd');
-    ind.classList.add('vis');
-    setTimeout(()=>ind.classList.remove('vis'),1500);
+function rmS(sym){D.stocks=D.stocks.filter(s=>s.symbol!==sym);D.favorites=D.favorites.filter(f=>f!==sym);delete D.hist[sym];saveLocal();fillSel();R();toast(sym+' silindi','info')}
+function tgF(sym){const i=D.favorites.indexOf(sym);if(i>=0)D.favorites.splice(i,1);else D.favorites.push(sym);saveLocal();R()}
+
+function addPrt(){
+    const sym=document.getElementById('pSe').value,lot=parseInt(document.getElementById('pL').value),pr=parseFloat(document.getElementById('pPr').value),dt=document.getElementById('pD').value;
+    if(!sym||!lot||!pr){toast('Doldurun','error');return}
+    D.portfolio.push({symbol:sym,lots:lot,buyPrice:pr,date:dt});saveLocal();R();cM('pM');toast(lot+' lot '+sym,'success');if(cloud.key&&cloud.bin)setTimeout(toCloud,1000);
 }
+function rmP(i){D.portfolio.splice(i,1);saveLocal();R()}
 
-function loadLocal(){
-    try{
-        const d = localStorage.getItem('ht_data');
-        if(d){
-            const p = JSON.parse(d);
-            S.stocks=p.stocks||[];S.portfolio=p.portfolio||[];
-            S.alerts=p.alerts||[];S.favorites=p.favorites||[];S.hist=p.hist||{};
-        }
-    }catch(e){}
+function addAlr(){
+    const sym=document.getElementById('lSe').value,cnd=document.getElementById('lCn').value,pr=parseFloat(document.getElementById('lPr').value);
+    if(!sym||!pr){toast('Doldurun','error');return}
+    D.alerts.push({symbol:sym,condition:cnd,price:pr,active:true});saveLocal();R();cM('lM');toast(sym+' alarm','success');
 }
+function rmA(i){D.alerts.splice(i,1);saveLocal();R()}
+function chkAlr(){D.alerts.forEach(a=>{if(!a.active)return;const s=D.stocks.find(x=>x.symbol===a.symbol);if(!s||!s.price)return;let h=false;if(a.condition==='above'&&s.price>=a.price)h=true;if(a.condition==='below'&&s.price<=a.price)h=true;if(h){a.active=false;toast(`🔔 ${a.symbol} ₺${a.price} ${a.condition==='above'?'üstüne çıktı':'altına düştü'}!`,'warning');saveLocal();R()}})}
 
-// ================================================
-//  STOCK CREATION
-// ================================================
-function mkStock(sym){
-    const d = BIST100[sym];
-    if(!d) return null;
-    if(S.stocks.find(s=>s.symbol===sym)) return null;
+function expJ(){const b=new Blob([JSON.stringify(D,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='bist100_'+new Date().toISOString().slice(0,10)+'.json';a.click();toast('İndirildi','success')}
+function impJ(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(d.stocks){D=d;saveLocal();fillSel();R();toast(D.stocks.length+' hisse yüklendi','success');if(cloud.key&&cloud.bin)toCloud()}}catch(er){toast('Hata','error')}};r.readAsText(f);e.target.value=''}
+function clrAll(){if(!confirm('TÜM VERİLER SİLİNECEK?'))return;D={stocks:[],portfolio:[],alerts:[],favorites:[],hist:{}};saveLocal();fillSel();R();toast('Silindi','warning')}
 
-    if(!S.hist[sym]){
-        S.hist[sym]=[];
-        let p=100;
-        for(let i=0;i<20;i++){p+=(Math.random()-.48)*2;S.hist[sym].push(+p.toFixed(2));}
-    }
+// ============ RENDER ============
+function R(){rW();rP();rA();rSm();
+    document.getElementById('bC').textContent=D.stocks.length;
+    document.getElementById('bP').textContent=D.portfolio.length;
+    document.getElementById('bA').textContent=D.alerts.length;uCI()}
 
-    return {
-        symbol:sym, name:d.n, sector:d.s,
-        price:0, open:0, change:0, changePct:0,
-        volume:0, high:0, low:0, prevPrice:0, prevClose:0,
-        color:CL[Math.abs(hash(sym))%CL.length]
-    };
-}
-
-function hash(s){let h=0;for(let i=0;i<s.length;i++)h=s.charCodeAt(i)+((h<<5)-h);return h}
-
-// ================================================
-//  ACTIONS
-// ================================================
-function addS(){
-    const sel = document.getElementById('addSel').value;
-    const multi = document.getElementById('addMulti').value.toUpperCase().trim();
-    let added = 0;
-
-    if(sel){ const st=mkStock(sel); if(st){S.stocks.push(st);added++;} }
-
-    if(multi){
-        multi.split(',').map(s=>s.trim()).filter(Boolean).forEach(sym=>{
-            const st=mkStock(sym);
-            if(st){S.stocks.push(st);added++;}
-        });
-    }
-
-    if(added>0){
-        saveLocal();fillSel();rndr();cmod('addMod');
-        toast(`${added} hisse eklendi`,'success');
-        fetchPrices();
-        if(cloud.apiKey&&cloud.binId) setTimeout(syncToCloud,2000);
-    } else {
-        toast('Hisse eklenemedi (zaten listede veya geçersiz kod)','warning');
-    }
-    document.getElementById('addSel').value='';
-    document.getElementById('addMulti').value='';
-}
-
-function addPreset(key){
-    if(key==='all'){
-        let added=0;
-        Object.keys(BIST100).forEach(sym=>{
-            const st=mkStock(sym);
-            if(st){S.stocks.push(st);added++;}
-        });
-        if(added>0){
-            saveLocal();fillSel();rndr();cmod('addMod');
-            toast(`${added} hisse eklendi (Tüm BIST100)`,'success');
-            fetchPrices();
-        }
-        return;
-    }
-
-    const list = PRESETS[key]||[];
-    let added=0;
-    list.forEach(sym=>{
-        const st=mkStock(sym);
-        if(st){S.stocks.push(st);added++;}
-    });
-    if(added>0){
-        saveLocal();fillSel();rndr();
-        toast(`${added} hisse eklendi`,'success');
-        fetchPrices();
-    }
-}
-
-function removeStock(sym){
-    S.stocks=S.stocks.filter(s=>s.symbol!==sym);
-    S.favorites=S.favorites.filter(f=>f!==sym);
-    delete S.hist[sym];
-    saveLocal();fillSel();rndr();
-    toast(sym+' kaldırıldı','info');
-}
-
-function toggleFav(sym){
-    const i=S.favorites.indexOf(sym);
-    if(i>=0)S.favorites.splice(i,1);else S.favorites.push(sym);
-    saveLocal();rndr();
-}
-
-function addP(){
-    const sym=document.getElementById('pSel').value;
-    const lots=parseInt(document.getElementById('pLot').value);
-    const pr=parseFloat(document.getElementById('pPr').value);
-    const dt=document.getElementById('pDt').value;
-    if(!sym||!lots||!pr){toast('Alanları doldurun','error');return;}
-    S.portfolio.push({symbol:sym,lots,buyPrice:pr,date:dt});
-    saveLocal();rndr();cmod('prtMod');
-    toast(`${lots} lot ${sym} eklendi`,'success');
-    if(cloud.apiKey&&cloud.binId) setTimeout(syncToCloud,1000);
-}
-
-function removeP(i){S.portfolio.splice(i,1);saveLocal();rndr();toast('Kaldırıldı','info');}
-
-function addA(){
-    const sym=document.getElementById('aSel').value;
-    const cnd=document.getElementById('aCnd').value;
-    const pr=parseFloat(document.getElementById('aPr').value);
-    if(!sym||!pr){toast('Doldurun','error');return;}
-    S.alerts.push({symbol:sym,condition:cnd,price:pr,active:true});
-    saveLocal();rndr();cmod('alrMod');
-    toast(`${sym} alarm kuruldu`,'success');
-}
-
-function removeA(i){S.alerts.splice(i,1);saveLocal();rndr();}
-
-function checkAlerts(){
-    S.alerts.forEach(a=>{
-        if(!a.active)return;
-        const s=S.stocks.find(x=>x.symbol===a.symbol);
-        if(!s||s.price===0)return;
-        let hit=false;
-        if(a.condition==='above'&&s.price>=a.price)hit=true;
-        if(a.condition==='below'&&s.price<=a.price)hit=true;
-        if(hit){
-            a.active=false;
-            toast(`🔔 ${a.symbol} ₺${a.price} ${a.condition==='above'?'üstüne çıktı':'altına düştü'}! (₺${s.price})`,'warning');
-            saveLocal();rndr();
-        }
-    });
-}
-setInterval(checkAlerts,10000);
-
-// ================================================
-//  EXPORT / IMPORT
-// ================================================
-function exportJSON(){
-    const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
-    const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-    a.download=`bist100_${new Date().toISOString().slice(0,10)}.json`;a.click();
-    toast('JSON indirildi','success');
-}
-
-function importJSON(e){
-    const f=e.target.files[0];if(!f)return;
-    const r=new FileReader();
-    r.onload=ev=>{
-        try{
-            const d=JSON.parse(ev.target.result);
-            if(d.stocks){
-                S=d;saveLocal();fillSel();rndr();
-                toast(`${S.stocks.length} hisse yüklendi`,'success');
-                if(cloud.apiKey&&cloud.binId) syncToCloud();
-            }
-        }catch(err){toast('Dosya hatası','error');}
-    };
-    r.readAsText(f);e.target.value='';
-}
-
-function clearAll(){
-    if(!confirm('TÜM VERİLER SİLİNECEK! Emin misiniz?'))return;
-    S={stocks:[],portfolio:[],alerts:[],favorites:[],hist:{}};
-    saveLocal();fillSel();rndr();toast('Silindi','warning');
-}
-
-// ================================================
-//  RENDER
-// ================================================
-function rndr(){renderW();renderP();renderAl();renderSum();
-    document.getElementById('bCnt').textContent=S.stocks.length;
-    document.getElementById('bPrt').textContent=S.portfolio.length;
-    document.getElementById('bAlr').textContent=S.alerts.length;
-    updateCloudUI();
-}
-
-function renderW(){
-    const tb=document.getElementById('tb'),em=document.getElementById('we');
-    let list=[...S.stocks];
-    const q=(document.getElementById('si')?.value||'').toUpperCase();
-    if(q) list=list.filter(s=>s.symbol.includes(q)||s.name.toUpperCase().includes(q));
-    if(flt==='up') list=list.filter(s=>s.change>=0);
-    else if(flt==='dn') list=list.filter(s=>s.change<0);
-    else if(flt==='fav') list=list.filter(s=>S.favorites.includes(s.symbol));
-
-    list.sort((a,b)=>{
-        let va=a[srt.k],vb=b[srt.k];
-        if(typeof va==='string') return srt.a?va.localeCompare(vb):vb.localeCompare(va);
-        return srt.a?va-vb:vb-va;
-    });
-
-    if(!list.length){tb.innerHTML='';em.style.display='';return;}
-    em.style.display='none';
-
-    tb.innerHTML=list.map(s=>{
-        const up=s.change>=0,ar=up?'▲':'▼',fv=S.favorites.includes(s.symbol);
-        const fl=s.prevPrice&&s.prevPrice!==s.price?(s.price>s.prevPrice?'fg':'fr'):'';
-        const priceStr = s.price>0?'₺'+s.price.toLocaleString('tr-TR',{minimumFractionDigits:2}):'Yükleniyor...';
-
-        return `<tr class="${fl}" onclick="sdp('${s.symbol}')">
-            <td><div class="sc"><div class="av" style="background:${s.color}">${s.symbol.slice(0,2)}</div>
-            <div><div class="sn">${s.symbol}</div><div class="sn2">${s.name}</div></div></div></td>
-            <td><span class="pv">${priceStr}</span></td>
-            <td class="${up?'pos':'neg'}">${s.price>0?((up?'+':'')+s.change.toFixed(2)):'-'}</td>
+function rW(){
+    const tb=document.getElementById('tb'),em=document.getElementById('wE');
+    let ls=[...D.stocks];
+    const q=(document.getElementById('sI')?.value||'').toUpperCase();
+    if(q)ls=ls.filter(s=>s.symbol.includes(q)||s.name.toUpperCase().includes(q));
+    if(flt==='up')ls=ls.filter(s=>s.change>=0);
+    else if(flt==='dn')ls=ls.filter(s=>s.change<0);
+    else if(flt==='fav')ls=ls.filter(s=>D.favorites.includes(s.symbol));
+    ls.sort((a,b)=>{let va=a[srt.k],vb=b[srt.k];if(typeof va==='string')return srt.a?va.localeCompare(vb):vb.localeCompare(va);return srt.a?va-vb:vb-va});
+    if(!ls.length){tb.innerHTML='';em.style.display='';return}em.style.display='none';
+    tb.innerHTML=ls.map(s=>{
+        const up=s.change>=0,ar=up?'▲':'▼',fv=D.favorites.includes(s.symbol);
+        const fl=s.prevPrice&&s.prevPrice!==s.price?(s.price>s.prevPrice?'flg':'flr'):'';
+        const ps=s.price>0?'₺'+s.price.toLocaleString('tr-TR',{minimumFractionDigits:2}):'⏳';
+        return`<tr class="${fl}" onclick="oDP('${s.symbol}')">
+            <td><div class="sc"><div class="av" style="background:${s.color}">${s.symbol.slice(0,2)}</div><div><div class="sn">${s.symbol}</div><div class="sn2">${s.name}</div></div></div></td>
+            <td><span class="pv">${ps}</span></td>
+            <td class="${up?'pos':'neg'}">${s.price>0?(up?'+':'')+s.change.toFixed(2):'-'}</td>
             <td>${s.price>0?`<span class="bg ${up?'p':'n'}">${ar} ${up?'+':''}${s.changePct.toFixed(2)}%</span>`:'-'}</td>
             <td class="hm vol">${s.volume?fV(s.volume):'-'}</td>
             <td class="hm">${s.high?'₺'+s.high.toFixed(2):'-'}</td>
             <td class="hm">${s.low?'₺'+s.low.toFixed(2):'-'}</td>
-            <td class="hm"><canvas class="mc" id="mc-${s.symbol}" width="60" height="24"></canvas></td>
-            <td onclick="event.stopPropagation()"><div class="abtn">
-                <button class="ab ${fv?'fon':''}" onclick="toggleFav('${s.symbol}')">${fv?'★':'☆'}</button>
-                <button class="ab dl" onclick="removeStock('${s.symbol}')">✕</button>
-            </div></td>
-        </tr>`;
-    }).join('');
-
-    setTimeout(()=>list.forEach(s=>dmc(s.symbol)),50);
+            <td class="hm"><canvas class="mc" id="mc${s.symbol}" width="55" height="22"></canvas></td>
+            <td onclick="event.stopPropagation()"><div class="abt">
+                <button class="ab ${fv?'fo':''}" onclick="tgF('${s.symbol}')">${fv?'★':'☆'}</button>
+                <button class="ab dl" onclick="rmS('${s.symbol}')">✕</button>
+            </div></td></tr>`}).join('');
+    setTimeout(()=>ls.forEach(s=>dMC(s.symbol)),50);
 }
 
-function renderP(){
-    const tb=document.getElementById('pb'),em=document.getElementById('pe');
-    if(!S.portfolio.length){tb.innerHTML='';em.style.display='';return;}
-    em.style.display='none';
-    tb.innerHTML=S.portfolio.map((it,i)=>{
-        const s=S.stocks.find(x=>x.symbol===it.symbol);
-        const cur=s&&s.price>0?s.price:it.buyPrice;
-        const val=cur*it.lots,cost=it.buyPrice*it.lots;
-        const pl=val-cost,pct=cost>0?((pl/cost)*100):0,up=pl>=0;
-        const col=s?s.color:CL[i%CL.length];
-        return `<tr>
-            <td><div class="sc"><div class="av" style="background:${col}">${it.symbol.slice(0,2)}</div>
-            <div><div class="sn">${it.symbol}</div><div class="sn2">${it.date||''}</div></div></div></td>
-            <td><strong>${it.lots}</strong></td>
-            <td>₺${it.buyPrice.toFixed(2)}</td>
-            <td class="pv">₺${cur.toFixed(2)}</td>
+function rP(){
+    const tb=document.getElementById('pB'),em=document.getElementById('pE');
+    if(!D.portfolio.length){tb.innerHTML='';em.style.display='';return}em.style.display='none';
+    tb.innerHTML=D.portfolio.map((it,i)=>{
+        const s=D.stocks.find(x=>x.symbol===it.symbol);const cur=s&&s.price>0?s.price:it.buyPrice;
+        const val=cur*it.lots,cost=it.buyPrice*it.lots,pl=val-cost,pct=cost>0?((pl/cost)*100):0,up=pl>=0;
+        return`<tr>
+            <td><div class="sc"><div class="av" style="background:${s?s.color:CL[i%CL.length]}">${it.symbol.slice(0,2)}</div><div><div class="sn">${it.symbol}</div><div class="sn2">${it.date||''}</div></div></div></td>
+            <td><strong>${it.lots}</strong></td><td>₺${it.buyPrice.toFixed(2)}</td><td class="pv">₺${cur.toFixed(2)}</td>
             <td><strong>₺${val.toLocaleString('tr-TR',{minimumFractionDigits:2})}</strong></td>
             <td class="${up?'pos':'neg'}"><strong>${up?'+':''}₺${pl.toFixed(2)}</strong></td>
             <td><span class="bg ${up?'p':'n'}">${up?'+':''}${pct.toFixed(2)}%</span></td>
-            <td><button class="ab dl" onclick="removeP(${i})">✕</button></td>
-        </tr>`;
-    }).join('');
+            <td><button class="ab dl" onclick="rmP(${i})">✕</button></td></tr>`}).join('');
 }
 
-function renderAl(){
-    const el=document.getElementById('al'),em=document.getElementById('ae');
-    if(!S.alerts.length){el.innerHTML='';em.style.display='';return;}
-    em.style.display='none';
-    el.innerHTML=S.alerts.map((a,i)=>{
-        const s=S.stocks.find(x=>x.symbol===a.symbol);
-        const cur=s?s.price:0;
-        return `<div class="alc"><div class="all"><strong>${a.symbol}</strong>
-            <span class="at ${a.condition==='above'?'u':'d'}">${a.condition==='above'?'Üstüne':'Altına'}</span>
-            <span>₺${a.price.toFixed(2)}</span>
-            <span style="color:var(--tx2);font-size:10px">(₺${cur.toFixed(2)})</span>
-        </div><button class="ab dl" onclick="removeA(${i})">✕</button></div>`;
-    }).join('');
+function rA(){
+    const el=document.getElementById('aL'),em=document.getElementById('aE');
+    if(!D.alerts.length){el.innerHTML='';em.style.display='';return}em.style.display='none';
+    el.innerHTML=D.alerts.map((a,i)=>{const s=D.stocks.find(x=>x.symbol===a.symbol);
+        return`<div class="alc"><div class="all"><strong>${a.symbol}</strong><span class="at ${a.condition==='above'?'u':'d'}">${a.condition==='above'?'Üstüne':'Altına'}</span><span>₺${a.price.toFixed(2)}</span><span style="color:var(--tx2);font-size:9px">(₺${s?s.price.toFixed(2):'?'})</span></div><button class="ab dl" onclick="rmA(${i})">✕</button></div>`}).join('');
 }
 
-function renderSum(){
+function rSm(){
     let tv=0,tc=0,dp=0;
-    S.portfolio.forEach(it=>{
-        const s=S.stocks.find(x=>x.symbol===it.symbol);
-        const pr=s&&s.price>0?s.price:it.buyPrice;
-        const op=s&&s.open>0?s.open:it.buyPrice;
-        tv+=pr*it.lots;tc+=it.buyPrice*it.lots;dp+=(pr-op)*it.lots;
-    });
+    D.portfolio.forEach(it=>{const s=D.stocks.find(x=>x.symbol===it.symbol);const pr=s&&s.price>0?s.price:it.buyPrice;const op=s&&s.open>0?s.open:it.buyPrice;tv+=pr*it.lots;tc+=it.buyPrice*it.lots;dp+=(pr-op)*it.lots});
     const tp=tv-tc,tpp=tc>0?((tp/tc)*100):0,dpp=tc>0?((dp/tc)*100):0;
     document.getElementById('sv').textContent='₺'+tv.toLocaleString('tr-TR',{minimumFractionDigits:2});
-    const de=document.getElementById('sd');
-    de.textContent=(dp>=0?'+':'')+'₺'+dp.toFixed(2);de.className='val '+(dp>=0?'pos':'neg');
-    document.getElementById('sds').textContent=(dpp>=0?'+':'')+dpp.toFixed(2)+'%';
-    document.getElementById('sds').className='sub '+(dp>=0?'pos':'neg');
-    const te=document.getElementById('st');
-    te.textContent=(tp>=0?'+':'')+'₺'+tp.toFixed(2);te.className='val '+(tp>=0?'pos':'neg');
-    document.getElementById('sts').textContent=(tpp>=0?'+':'')+tpp.toFixed(2)+'%';
-    document.getElementById('sts').className='sub '+(tp>=0?'pos':'neg');
-    document.getElementById('sc').textContent=S.stocks.length;
+    const de=document.getElementById('sd');de.textContent=(dp>=0?'+':'')+'₺'+dp.toFixed(2);de.className='v '+(dp>=0?'pos':'neg');
+    document.getElementById('sds').textContent=(dpp>=0?'+':'')+dpp.toFixed(2)+'%';document.getElementById('sds').className='s '+(dp>=0?'pos':'neg');
+    const te=document.getElementById('st');te.textContent=(tp>=0?'+':'')+'₺'+tp.toFixed(2);te.className='v '+(tp>=0?'pos':'neg');
+    document.getElementById('sts').textContent=(tpp>=0?'+':'')+tpp.toFixed(2)+'%';document.getElementById('sts').className='s '+(tp>=0?'pos':'neg');
+    document.getElementById('scc').textContent=D.stocks.length;
 }
 
-// ================================================
-//  CHARTS
-// ================================================
-function dmc(sym){
-    const c=document.getElementById('mc-'+sym);if(!c)return;
-    const ctx=c.getContext('2d'),d=S.hist[sym]||[];if(d.length<2)return;
-    const w=c.width,h=c.height;ctx.clearRect(0,0,w,h);
-    const mn=Math.min(...d),mx=Math.max(...d),rg=mx-mn||1;
-    const up=d[d.length-1]>=d[0];
-    ctx.strokeStyle=up?'#10b981':'#ef4444';ctx.lineWidth=1.5;ctx.beginPath();
-    d.forEach((p,i)=>{const x=(i/(d.length-1))*w,y=h-((p-mn)/rg)*(h-3)-1.5;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
-    ctx.stroke();
-    const g=ctx.createLinearGradient(0,0,0,h);
-    g.addColorStop(0,up?'rgba(16,185,129,.1)':'rgba(239,68,68,.1)');g.addColorStop(1,'transparent');
-    ctx.lineTo(w,h);ctx.lineTo(0,h);ctx.closePath();ctx.fillStyle=g;ctx.fill();
-}
+// ============ CHARTS ============
+function dMC(sym){const c=document.getElementById('mc'+sym);if(!c)return;const ctx=c.getContext('2d'),d=D.hist[sym]||[];if(d.length<2)return;const w=c.width,h=c.height;ctx.clearRect(0,0,w,h);const mn=Math.min(...d),mx=Math.max(...d),rg=mx-mn||1;const up=d[d.length-1]>=d[0];ctx.strokeStyle=up?'#10b981':'#ef4444';ctx.lineWidth=1.5;ctx.beginPath();d.forEach((p,i)=>{const x=(i/(d.length-1))*w,y=h-((p-mn)/rg)*(h-3)-1.5;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)});ctx.stroke();const g=ctx.createLinearGradient(0,0,0,h);g.addColorStop(0,up?'rgba(16,185,129,.1)':'rgba(239,68,68,.1)');g.addColorStop(1,'transparent');ctx.lineTo(w,h);ctx.lineTo(0,h);ctx.closePath();ctx.fillStyle=g;ctx.fill()}
+function dBC(sym){const c=document.getElementById('bC2');if(!c)return;const ctx=c.getContext('2d'),d=D.hist[sym]||[];if(d.length<2)return;const r=c.parentElement.getBoundingClientRect();c.width=r.width-24;c.height=150;const w=c.width,h=c.height,pd=26;ctx.clearRect(0,0,w,h);const mn=Math.min(...d),mx=Math.max(...d),rg=mx-mn||1;const up=d[d.length-1]>=d[0];ctx.strokeStyle='rgba(255,255,255,.05)';ctx.lineWidth=1;for(let i=0;i<=4;i++){const y=pd+(i/4)*(h-2*pd);ctx.beginPath();ctx.moveTo(pd,y);ctx.lineTo(w-pd,y);ctx.stroke();ctx.fillStyle='#8892a4';ctx.font='8px system-ui';ctx.textAlign='right';ctx.fillText('₺'+(mx-(i/4)*rg).toFixed(2),pd-2,y+3)}ctx.strokeStyle=up?'#10b981':'#ef4444';ctx.lineWidth=2;ctx.beginPath();const pts=[];d.forEach((p,i)=>{const x=pd+(i/(d.length-1))*(w-2*pd),y=pd+((mx-p)/rg)*(h-2*pd);pts.push({x,y});i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)});ctx.stroke();const g=ctx.createLinearGradient(0,pd,0,h-pd);g.addColorStop(0,up?'rgba(16,185,129,.1)':'rgba(239,68,68,.1)');g.addColorStop(1,'transparent');ctx.lineTo(w-pd,h-pd);ctx.lineTo(pd,h-pd);ctx.closePath();ctx.fillStyle=g;ctx.fill();const l=pts[pts.length-1];ctx.beginPath();ctx.arc(l.x,l.y,3,0,Math.PI*2);ctx.fillStyle=up?'#10b981':'#ef4444';ctx.fill();ctx.strokeStyle='white';ctx.lineWidth=1.5;ctx.stroke()}
 
-function dbc(sym){
-    const c=document.getElementById('bc');if(!c)return;
-    const ctx=c.getContext('2d'),d=S.hist[sym]||[];if(d.length<2)return;
-    const r=c.parentElement.getBoundingClientRect();c.width=r.width-28;c.height=160;
-    const w=c.width,h=c.height,pd=28;ctx.clearRect(0,0,w,h);
-    const mn=Math.min(...d),mx=Math.max(...d),rg=mx-mn||1;
-    const up=d[d.length-1]>=d[0];
-    ctx.strokeStyle='rgba(255,255,255,.05)';ctx.lineWidth=1;
-    for(let i=0;i<=4;i++){
-        const y=pd+(i/4)*(h-2*pd);ctx.beginPath();ctx.moveTo(pd,y);ctx.lineTo(w-pd,y);ctx.stroke();
-        ctx.fillStyle='#8892a4';ctx.font='9px system-ui';ctx.textAlign='right';
-        ctx.fillText('₺'+(mx-(i/4)*rg).toFixed(2),pd-3,y+3);
-    }
-    ctx.strokeStyle=up?'#10b981':'#ef4444';ctx.lineWidth=2;ctx.beginPath();
-    const pts=[];
-    d.forEach((p,i)=>{const x=pd+(i/(d.length-1))*(w-2*pd),y=pd+((mx-p)/rg)*(h-2*pd);pts.push({x,y});i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});
-    ctx.stroke();
-    const g=ctx.createLinearGradient(0,pd,0,h-pd);
-    g.addColorStop(0,up?'rgba(16,185,129,.12)':'rgba(239,68,68,.12)');g.addColorStop(1,'transparent');
-    ctx.lineTo(w-pd,h-pd);ctx.lineTo(pd,h-pd);ctx.closePath();ctx.fillStyle=g;ctx.fill();
-    const l=pts[pts.length-1];ctx.beginPath();ctx.arc(l.x,l.y,3,0,Math.PI*2);
-    ctx.fillStyle=up?'#10b981':'#ef4444';ctx.fill();ctx.strokeStyle='white';ctx.lineWidth=1.5;ctx.stroke();
-}
-
-// ================================================
-//  DETAIL
-// ================================================
-function sdp(sym){
-    const s=S.stocks.find(x=>x.symbol===sym);if(!s)return;
-    const up=s.change>=0;
-    document.getElementById('dt').innerHTML=`<div class="av" style="background:${s.color};width:32px;height:32px;font-size:11px">${s.symbol.slice(0,2)}</div>${s.symbol} - ${s.name}`;
-    document.getElementById('dgr').innerHTML=`
-        <div class="db"><div class="l">Fiyat</div><div class="v ${up?'pos':'neg'}">₺${s.price.toFixed(2)}</div></div>
-        <div class="db"><div class="l">Değişim</div><div class="v ${up?'pos':'neg'}">${up?'+':''}${s.change.toFixed(2)} (${up?'+':''}${s.changePct.toFixed(2)}%)</div></div>
-        <div class="db"><div class="l">Açılış</div><div class="v">₺${s.open.toFixed(2)}</div></div>
-        <div class="db"><div class="l">Yüksek</div><div class="v pos">₺${s.high.toFixed(2)}</div></div>
-        <div class="db"><div class="l">Düşük</div><div class="v neg">₺${s.low.toFixed(2)}</div></div>
-        <div class="db"><div class="l">Hacim</div><div class="v">${fV(s.volume)}</div></div>
-        <div class="db"><div class="l">Sektör</div><div class="v" style="font-size:12px">${s.sector}</div></div>
-        <div class="db"><div class="l">Önceki Kapanış</div><div class="v">₺${(s.prevClose||s.open).toFixed(2)}</div></div>`;
+// ============ DETAIL ============
+function oDP(sym){const s=D.stocks.find(x=>x.symbol===sym);if(!s)return;const up=s.change>=0;
+    document.getElementById('dT').innerHTML=`<div class="av" style="background:${s.color};width:30px;height:30px;font-size:10px">${s.symbol.slice(0,2)}</div>${s.symbol} - ${s.name}`;
+    document.getElementById('dG').innerHTML=`
+        <div class="db"><div class="dl">Fiyat</div><div class="dv ${up?'pos':'neg'}">₺${s.price.toFixed(2)}</div></div>
+        <div class="db"><div class="dl">Değişim</div><div class="dv ${up?'pos':'neg'}">${up?'+':''}${s.change.toFixed(2)} (${up?'+':''}${s.changePct.toFixed(2)}%)</div></div>
+        <div class="db"><div class="dl">Açılış</div><div class="dv">₺${s.open.toFixed(2)}</div></div>
+        <div class="db"><div class="dl">Yüksek</div><div class="dv pos">₺${s.high.toFixed(2)}</div></div>
+        <div class="db"><div class="dl">Düşük</div><div class="dv neg">₺${s.low.toFixed(2)}</div></div>
+        <div class="db"><div class="dl">Hacim</div><div class="dv">${fV(s.volume)}</div></div>
+        <div class="db"><div class="dl">Sektör</div><div class="dv" style="font-size:11px">${s.sector}</div></div>
+        <div class="db"><div class="dl">Önceki Kapanış</div><div class="dv">₺${(s.prevClose||s.open).toFixed(2)}</div></div>`;
     document.getElementById('dp').classList.add('open');
-    setTimeout(()=>dbc(sym),100);
-    document.getElementById('dp').scrollIntoView({behavior:'smooth'});
-}
-function cdp(){document.getElementById('dp').classList.remove('open');}
+    setTimeout(()=>dBC(sym),100);
+    document.getElementById('dp').scrollIntoView({behavior:'smooth'})}
+function cDP(){document.getElementById('dp').classList.remove('open')}
 
-// ================================================
-//  UI HELPERS
-// ================================================
-function stab(t,btn){
-    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));btn.classList.add('on');
-    ['tWatch','tPort','tAlert','tCloud'].forEach(id=>document.getElementById(id).style.display='none');
-    const map={watch:'tWatch',port:'tPort',alert:'tAlert',cloud:'tCloud'};
-    document.getElementById(map[t]).style.display='';
-    if(t==='cloud') updateCloudUI();
-}
-
-function sf(f,btn){flt=f;document.querySelectorAll('.fgrp .btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');renderW();}
-function ss(k){if(srt.k===k)srt.a=!srt.a;else{srt.k=k;srt.a=true;}renderW();}
-
+// ============ UI ============
+function sTab(t,btn){document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));btn.classList.add('on');['tW','tP','tA','tC'].forEach(id=>document.getElementById(id).style.display='none');document.getElementById({w:'tW',p:'tP',a:'tA',c:'tC'}[t]).style.display='';if(t==='c')uCI()}
+function sF(f,btn){flt=f;document.querySelectorAll('.fg .btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');rW()}
+function sS(k){if(srt.k===k)srt.a=!srt.a;else{srt.k=k;srt.a=true}rW()}
 function fillSel(){
-    const sel=document.getElementById('addSel');
-    const exist=new Set(S.stocks.map(s=>s.symbol));
+    const sel=document.getElementById('aS');const ex=new Set(D.stocks.map(s=>s.symbol));
     sel.innerHTML='<option value="">Seçin...</option>';
-    Object.entries(BIST100).sort((a,b)=>a[0].localeCompare(b[0])).forEach(([sym,d])=>{
-        if(!exist.has(sym)) sel.innerHTML+=`<option value="${sym}">${sym} - ${d.n}</option>`;
-    });
-    ['pSel','aSel'].forEach(id=>{
-        const s=document.getElementById(id);if(!s)return;
-        s.innerHTML='<option value="">Seçin...</option>';
-        S.stocks.forEach(st=>{s.innerHTML+=`<option value="${st.symbol}">${st.symbol} - ₺${st.price>0?st.price.toFixed(2):'?'}</option>`;});
-    });
+    Object.entries(B100).sort((a,b)=>a[0].localeCompare(b[0])).forEach(([sym,d])=>{if(!ex.has(sym))sel.innerHTML+=`<option value="${sym}">${sym} - ${d.n}</option>`});
+    ['pSe','lSe'].forEach(id=>{const s=document.getElementById(id);if(!s)return;s.innerHTML='<option value="">Seçin...</option>';D.stocks.forEach(st=>{s.innerHTML+=`<option value="${st.symbol}">${st.symbol} - ₺${st.price>0?st.price.toFixed(2):'?'}</option>`})});
 }
-
-function omod(id){
-    if(id==='prtMod'){fillSel();document.getElementById('pDt').valueAsDate=new Date();}
-    if(id==='alrMod')fillSel();
-    document.getElementById(id).classList.add('open');
-}
-function cmod(id){document.getElementById(id).classList.remove('open');}
-
-function fV(v){if(v>=1e9)return(v/1e9).toFixed(1)+'B';if(v>=1e6)return(v/1e6).toFixed(1)+'M';if(v>=1e3)return(v/1e3).toFixed(0)+'K';return v+'';}
-function updateClock(){document.getElementById('clock').textContent='⏰ '+new Date().toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});}
-
-function toast(m,t='info'){
-    const ic={success:'✅',error:'❌',warning:'⚠️',info:'ℹ️'};
-    const el=document.createElement('div');el.className='ti t'+t[0];
-    el.innerHTML=`<span>${ic[t]}</span><span>${m}</span>`;
-    document.getElementById('tbox').appendChild(el);
-    setTimeout(()=>el.remove(),4000);
-}
-
-document.querySelectorAll('.mo').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');});});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.mo').forEach(m=>m.classList.remove('open'));cdp();}});
-
-// START
+function oM(id){if(id==='pM'){fillSel();document.getElementById('pD').valueAsDate=new Date()}if(id==='lM')fillSel();document.getElementById(id).classList.add('open')}
+function cM(id){document.getElementById(id).classList.remove('open')}
+function fV(v){if(v>=1e9)return(v/1e9).toFixed(1)+'B';if(v>=1e6)return(v/1e6).toFixed(1)+'M';if(v>=1e3)return(v/1e3).toFixed(0)+'K';return v+''}
+function toast(m,t='info'){const ic={success:'✅',error:'❌',warning:'⚠️',info:'ℹ️'};const el=document.createElement('div');el.className='ti t'+t[0];el.innerHTML=`<span>${ic[t]}</span><span>${m}</span>`;document.getElementById('tbx').appendChild(el);setTimeout(()=>el.remove(),4000)}
+document.querySelectorAll('.mo').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')})});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.querySelectorAll('.mo').forEach(m=>m.classList.remove('open'));cDP()}});
 init();
 </script>
 </body>
